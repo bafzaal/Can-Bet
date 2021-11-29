@@ -53,6 +53,8 @@ app.post('/login', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
 
+        console.log(req.body)
+
         // Find User
         const user = await Users.findOne({email : email}); // Not sure if i should do username or password here
         if(user)

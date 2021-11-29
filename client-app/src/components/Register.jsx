@@ -1,7 +1,38 @@
-import React from "react";
+import React, {useState} from "react";
 import { NavLink } from 'react-router-dom';
 
 const Register = () => {
+
+    const [user, setUser] = useState({
+      username : '',
+      password : '',
+      email : ''
+    });
+
+    const handleOnChange = event => {
+      const { name, value } = event.target;
+      setUser({ ...user, [name]: value });
+    };
+
+    async function registerUser(credentials) {
+
+
+      const {username, password, email} = user;
+    
+      const req = fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        
+        body: JSON.stringify({username:username, password:password, email:email})
+      })
+        .then(data => data.json())
+    
+      console.log(req);
+      return req;
+     }
+     
     return (
         <div>
             <div className="container shadow my-5">
@@ -14,19 +45,19 @@ const Register = () => {
                     </div>
                     <div className="col-md-6 p-5">
                         <h1 className="display-6 fw-bolder mb-5">REGISTER</h1>
-                        <form>
+                        <form onSubmit={registerUser}>
                             <div className="mb-3">
                                 <label htmlFor="name" className="form-label">Username</label>
-                                <input type="text" className="form-control" id="name" />
+                                <input type="text" className="form-control" name="username" id="name" onChange={handleOnChange} value = {user.username} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-                                <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                                <input type="email" className="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={handleOnChange} value = {user.email} />
                                 <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-                                <input type="password" className="form-control" id="exampleInputPassword1" />
+                                <input type="password" className="form-control" name="password" id="exampleInputPassword1" onChange={handleOnChange} value = {user.password} />
                             </div>
                             <button type="submit" className="btn w-100 mt-4 rounded-pill btn-outline-danger">Submit</button>
                         </form>
@@ -36,5 +67,7 @@ const Register = () => {
         </div>
     );
 }
+
+
 
 export default Register;
