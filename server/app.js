@@ -7,6 +7,9 @@ const cookieParser = require('cookie-parser'); // Might not use this, depending 
 
 const app = express();
 
+// Configure ENV file and require conn.js
+dotenv.config({path : './config.env'});
+require('./db/conn');
 
 app.get('/', (req, res) => {
     res.send("test"); 
