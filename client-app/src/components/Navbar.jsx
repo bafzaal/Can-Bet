@@ -30,6 +30,8 @@ const Navbar = () => {
                             <i className="fa fa-sign-in me-2"></i> Login</NavLink>
                         <NavLink to="/register" className="btn btn-outline-danger ms-2 px-4 rounded-pill">
                             <i className="fa fa-user-plus me-2"></i>Register</NavLink>
+                        <NavLink to="/profile" className="btn btn-outline-danger ms-2 px-4 rounded-pill">
+                            <i className="fa fa-user me-2"></i>Profile</NavLink> {/*Add Styling to this button*/}
                     </div>
                 </div>
             </nav>
