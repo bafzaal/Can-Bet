@@ -1,8 +1,5 @@
-/* .login-button {
-  color: red !important;
-  border-color: red !important;
+/* FORM */
+.form{
+  background-color: #c62128;
+  background-image: linear-gradient(147deg, #c62128 0%, #a00000 74%);
 }
-
-.login-button:hover {
-  color: black !important;
-} */
