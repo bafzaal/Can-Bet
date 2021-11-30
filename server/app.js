@@ -40,7 +40,7 @@ app.post("/register", async (req, res) => {
 
     // save will create or insert the user after hashing, then it will save to db
     const created = await createUser.save();
-    console.log(created);
+    
     res.status(200).send("Registration Complete");
   } catch (error) {
     res.status(400).send(error);
@@ -88,9 +88,9 @@ app.get("/logout", async (req, res) => {
 // authentcation
 app.get("/authentication", async (req, res) => {
   var authenticated = await authenticate(req, res)
-  console.log(authenticated)
+
   if(authenticated){
-    console.log('TRUE')
+  
     res.status(200).send('Authenticated')
   }else{
     res.status(400).send('Not Authenticated')

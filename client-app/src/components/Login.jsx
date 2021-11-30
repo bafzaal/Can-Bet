@@ -27,7 +27,7 @@ const Login = () => {
         body: JSON.stringify({ password: password, email: email }),
       });
 
-      if (req.status == 400) {
+      if (req.status === 400) {
         window.alert("Incorrect password");
       } else {
          navigate('/', { replace: true })

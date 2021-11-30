@@ -25,10 +25,10 @@ const Navbar = (props) => {
                                 <NavLink to="/" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
                             </li>
                         </ul>
-                        <a className="navbar-brand fw-bolder fs-4 mx-auto" href="#"><img width="136" height="38" src={logo} /></a>
+                        <a className="navbar-brand fw-bolder fs-4 mx-auto" href="/"><img width="136" height="38" src={logo} /></a>
                         {props.isAuth ?       
                         <>
-                        <NavLink to="/profile" className="btn btn-outline-danger ms-auto px-4 rounded-pill">
+                        <NavLink to="/profile" className="btn btn-danger ms-auto px-4 rounded-pill">
                             <i className="fa fa-user me-2"></i>Profile</NavLink> 
                         <NavLink to="/logout" className="btn btn-outline-danger ms-2 px-4 rounded-pill">
                         <i className="fa fa-user-plus me-2"></i>Logout</NavLink>

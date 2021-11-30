@@ -13,7 +13,6 @@ function App() {
   const [invalid, setInvalid] = useState(true);
 
   const PrivateOutlet = () => {
-    console.log("From priv out")
     isLoggedIn();
     if(invalid) return <Navigate to="/login" />
     if(valid) return <Outlet />
@@ -30,8 +29,7 @@ function App() {
         }
       });
   
-      console.log("req is" + req.status)
-      if (req.status == 200) 
+      if (req.status === 200) 
       {
         setValid(true);
         setInvalid(false);
@@ -48,7 +46,6 @@ function App() {
   });
 
   useEffect(() => {
-    console.log("From effect")
     isLoggedIn();
   }, [isLoggedIn])
 

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { NavLink, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const Logout = () => {
 
@@ -18,7 +18,7 @@ const Logout = () => {
         }
       });
 
-      if (req.status == 202) {
+      if (req.status === 202) {
         navigate('/', { replace: true })
         window.location.reload();
       } else {
