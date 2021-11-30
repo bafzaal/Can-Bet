@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  let navigate = useNavigate();
+
   const [user, setUser] = useState({
     password: "",
     email: "",
@@ -25,16 +27,14 @@ const Login = () => {
       });
 
       if (req.status == 400) {
-        window.alert("WRONG HES ASLEEP");
+        window.alert("Incorrect password");
       } else {
-        window.alert("CORRECT HES AWAKE");
-        
+        navigate("/", { replace: true });
       }
     } catch (error) {
       console.log(error);
     }
   };
-
 
   return (
     <div>
