@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
 
 const Login = () => {
+
   let navigate = useNavigate();
 
   const [user, setUser] = useState({
@@ -29,7 +30,8 @@ const Login = () => {
       if (req.status == 400) {
         window.alert("Incorrect password");
       } else {
-        navigate("/", { replace: true });
+         navigate('/', { replace: true })
+         window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -99,3 +101,4 @@ const Login = () => {
 };
 
 export default Login;
+
