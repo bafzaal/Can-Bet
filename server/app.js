@@ -37,10 +37,10 @@ app.post("/register", async (req, res) => {
       email: email,
       password: password,
     });
-
+    console.log(req.body)
     // save will create or insert the user after hashing, then it will save to db
     const created = await createUser.save();
-    
+    console.log(created)
     res.status(200).send("Registration Complete");
   } catch (error) {
     res.status(400).send(error);
