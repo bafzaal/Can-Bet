@@ -20,6 +20,7 @@ const Logout = () => {
 
       if (req.status == 202) {
         navigate('/', { replace: true })
+        window.location.reload();
       } else {
         window.alert("did not clear cookie");
         
