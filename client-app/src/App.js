@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import {Routes, Route, Navigate, Outlet} from "react-router-dom";
@@ -20,7 +20,7 @@ function App() {
     else return <Navigate to="/login" />
   }
   
-  const isLoggedIn = async () => {
+  const isLoggedIn = useCallback (async () => {
     try 
     {
       const req = await fetch("/authentication", {
@@ -45,16 +45,16 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  });
 
   useEffect(() => {
     console.log("From effect")
     isLoggedIn();
-  }, [])
+  }, [isLoggedIn])
 
   return (
     <>
-      <Navbar />
+      <Navbar isAuth={valid}/>
       <Routes>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
