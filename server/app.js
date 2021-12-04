@@ -103,7 +103,7 @@ app.get("/authentication", async (req, res) => {
 app.get("/profile", async (req, res) => {
   try{
     //if not null 
-  console.log(req.query.id)
+
   //const email = req.body.email;
   const user = await Users.findById(req.query.id).exec();
   if(user)
@@ -112,7 +112,7 @@ app.get("/profile", async (req, res) => {
       console.log('error:-', e)
   }
 
-  console.log("made it!")
+
 });
 
 // Update user
