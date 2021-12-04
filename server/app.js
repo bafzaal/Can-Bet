@@ -4,8 +4,10 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-
+const cors = require('cors');
 const app = express();
+
+app.use(cors())
 
 // Configure ENV file and require conn.js
 dotenv.config({ path: "./config.env" });
@@ -54,7 +56,7 @@ app.post("/login", async (req, res) => {
     const password = req.body.password;
 
     // Find User
-    const user = await Users.findOne({ email: email }); // Not sure if i should do username or password here
+    const user = await Users.findOne({ email: email }); 
     if (user) {
       // Check Password
       const match = await bcryptjs.compare(password, user.password);
@@ -93,7 +95,7 @@ app.get("/authentication", async (req, res) => {
   
     res.status(200).send('Authenticated')
   }else{
-    res.status(400).send('Not Authenticated')
+    res.status(401).send('Not Authenticated')
   }
 });
 
