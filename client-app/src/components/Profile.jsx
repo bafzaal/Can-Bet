@@ -1,9 +1,9 @@
 import { React, useEffect, useState, useCallback } from 'react';
-import { resetPassword, getUser } from "../services/userService"
-import { useParams } from "react-router-dom";
+import { resetPassword, getUser, deleteUser} from "../services/userService"
+import { useParams, useNavigate } from "react-router-dom";
 
 const Profile = (props) => {
-
+  let navigate = useNavigate();
   const { id } = useParams();
   const [changePassword, setChangePassword] = useState({
     password: "",
@@ -26,7 +26,7 @@ const Profile = (props) => {
     e.preventDefault();
     const {password, newPassword } = changePassword;
     const {username, email} = user;
-    if (window.confirm('Are you sure you wish to delete this item?')){
+    if (window.confirm('Are you sure you wish to update this user?')){
     var result = await resetPassword(password, newPassword, username, email, id)
     if(result === 'success'){
       //navigate('/', { replace: true })
@@ -41,6 +41,16 @@ const Profile = (props) => {
       return result;
     }
   });
+  const removeUser = async(e) => {
+    e.preventDefault();
+    if (window.confirm('Are you sure you wish to delete this item?')){
+      var result = await deleteUser(id, changePassword.password)
+      if(result === 'success'){
+        navigate('/login', { replace: true })
+        window.location.reload();
+      }
+    }
+  }
   useEffect(() => {
   
       retrieveUser().then(result =>{
@@ -115,11 +125,10 @@ const Profile = (props) => {
                 </div>
                 <button
                   type="submit"
-                  className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger"
-                >
+                  className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger" disabled={changePassword.password.length<1}>
                   Submit
                 </button>
-                <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                <button className="btn btn-danger btn-sm rounded-0" onClick={removeUser} disabled={changePassword.password.length<1} type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i className="fa fa-trash"></i></button>
               </form>
             </div>
           </div>

@@ -101,21 +101,8 @@ app.get("/authentication", async (req, res) => {
 
 // get User
 app.get("/profile", async (req, res) => {
-  try{
-    //if not null 
-  const user = await Users.findById(req.query.id).exec();
-  if(user)
-    user.remove();
-    } catch(e) {
-      console.log('error:-', e)
-  }
-  console.log('User successfully deleted!');
-  res.status(200).send();
-});
 
-// get User
-app.delete("/profile", async (req, res) => {
-  try{
+try{
     //if not null 
   const user = await Users.findById(req.query.id).exec();
   if(user)
@@ -123,7 +110,27 @@ app.delete("/profile", async (req, res) => {
     } catch(e) {
       console.log('error:-', e)
   }
+});
 
+// delete User
+app.delete("/profile", async (req, res) => {
+  try{
+    //if not null 
+  const password = req.body.password;
+  const user = await Users.findById(req.query.id).exec();
+  if(user){
+     // Check Password
+     const match = await bcryptjs.compare(password, user.password);
+     if (match) {
+       await user.remove();
+       res.status(200).send("Updated Successfully");
+     } else {
+       res.status(400).send("Incorrect Password");
+     }
+    } 
+  }catch(e) {
+    console.log('error:-', e)
+  }
 });
 
 // Update user

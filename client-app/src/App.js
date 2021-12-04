@@ -45,7 +45,6 @@ function App() {
   useEffect(() => {
 
     isLoggedIn().then(result =>{
-      console.log(result)
       setIsTokenValidated(result.auth);
       setUserId(result.id);
    

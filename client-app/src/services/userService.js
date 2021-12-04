@@ -122,7 +122,7 @@ const resetPassword = async (oldPassword, newPassword, username, email,id) => {
     if (req.status === 200) {
       return "success";
     } else {
-      window.alert("could not change password");
+      window.alert("could not update user");
       return "error";
     }
     return req;
@@ -131,4 +131,26 @@ const resetPassword = async (oldPassword, newPassword, username, email,id) => {
   }
   
 };
-export { login, register, logout, resetPassword, getUser};
+
+const deleteUser = async (id, password) => {
+  try {
+    const req = await fetch("/profile?id=" + id , {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: password,
+      })
+    })
+    if (req.status === 200) {
+      return "success";
+    } else {
+      window.alert("could not delete due to incorrect password");
+      return "error";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+export { login, register, logout, resetPassword, getUser, deleteUser};
