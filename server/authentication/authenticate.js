@@ -5,21 +5,18 @@ const authenticate = async (req, res) => {
   const cookie = req.cookies.jwt;
   if (!cookie) {
 
-   
-    return false;
+    return null;
 
   } else {
     const id = jwt.verify(cookie, process.env.SECRET_KEY);
-    const user = await Users.findById(id["_id"]).exec();
-
+    const userId = id["_id"]
+    const user = await Users.findById(userId).exec();
     if (user) {
- 
-      return true;
+      return userId;
     }
   
-    
   }
-  return false;
+  return null;
   next();
 };
 

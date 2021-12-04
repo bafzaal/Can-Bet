@@ -66,4 +66,68 @@ const logout = async () => {
     console.log(error);
   }
 };
-export { login, register, logout };
+
+const getUser = async (id) => {
+  try {
+    var result;
+    const req = await fetch("/profile?id=" + id , {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response.status !== 200) {
+        return false;
+      };
+      return response.json();
+    })
+    .then((response) => {
+      var userDict = {};
+      userDict["username"] = response["username"];
+      userDict["email"] = response["email"];
+      if (userDict.length !==  0) {
+        result = userDict;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (req.status === 200) {
+      return "success";
+    } else {
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return result;
+};
+
+const resetPassword = async (oldPassword, newPassword, id) => {
+  try {
+    const req = await fetch("/newPassword", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        oldPassword: oldPassword,
+        password: newPassword,
+        id: id,
+      }),
+    });
+
+    if (req.status === 200) {
+      return "success";
+    } else {
+      window.alert("could not change password");
+      return "error";
+    }
+    return req;
+  } catch (error) {
+    console.log(error);
+  }
+  
+};
+export { login, register, logout, resetPassword, getUser};

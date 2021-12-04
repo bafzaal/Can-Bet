@@ -87,15 +87,58 @@ app.get("/logout", async (req, res) => {
   res.status(202).clearCookie("jwt").send('Clearing cookie');
 });
 
+
 // authentcation
 app.get("/authentication", async (req, res) => {
-  var authenticated = await authenticate(req, res)
-
-  if(authenticated){
+  var id = await authenticate(req, res)
+  if(id != null){
   
-    res.status(200).send('Authenticated')
+    res.status(200).json({result:id})
   }else{
-    res.status(401).send('Not Authenticated')
+    res.status(401).json({result:null})
+  }
+});
+
+// get User
+app.get("/profile", async (req, res) => {
+  try{
+    //if not null 
+  console.log(req.query.id)
+  //const email = req.body.email;
+  const user = await Users.findById(req.query.id).exec();
+  if(user)
+    res.json(user);
+    } catch(e) {
+      console.log('error:-', e)
+  }
+
+  console.log("made it!")
+});
+
+// Update user
+app.post("/newPassword", async (req, res) => {
+  //console.log(req.body)
+  try {
+    const userId = req.body.id;
+    const password = req.body.oldPassword;
+    const newpassword = req.body.password;
+    // Find User
+    const user = await Users.findById(userId).exec();
+    if (user) {
+      // Check Password
+      const match = await bcryptjs.compare(password, user.password);
+      if (match) {
+        user.password = newpassword;
+        await user.save();
+        res.status(200).send("Updated Successfully");
+      } else {
+        res.status(400).send("Incorrect Password");
+      }
+    } else {
+      res.status(400).send("Incorrect Email/Username"); // FIX THIS LATER
+    }
+  } catch (error) {
+    res.status(400).send(error);
   }
 });
 

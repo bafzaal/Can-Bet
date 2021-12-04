@@ -21,6 +21,7 @@ const Login = () => {
     const { email, password } = user;
     var result = await login(email, password)
     if(result === 'success'){
+      localStorage.setItem("email", email)
       navigate('/', { replace: true })
       window.location.reload();
     }
