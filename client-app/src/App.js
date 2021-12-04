@@ -14,6 +14,8 @@ function App() {
   const [userId, setUserId] = useState("");
 
   const isLoggedIn = useCallback(async () => {
+
+    var result ={auth:false, id:'' }
     try {
       const req = await fetch("/authentication", {
         method: "GET",
@@ -23,36 +25,32 @@ function App() {
       })
         .then((response) => {
           if (response.status === 200) {
-            setIsTokenValidated(true);
-          } else {
-            setIsTokenValidated(false);
-          }
+            result.auth=true;
+          } 
           return response.json();
         })
         .then((response) => {
-          const result = response["result"];
-          if (result != null) {
-            setUserId(result);
-            return true;
-          } else {
-            setUserId("");
-            return false;
+          const data = response["result"];
+          if (data != null) {
+            result.id = data
           }
         });
     } catch (error) {
       console.log("error " + error);
     }
-    return false;
+    return result;
   });
 
-  const PrivateOutlet = () => {
-    isLoggedIn();
-    if (isTokenValidated) return <Outlet />;
-    else return <Navigate to="/login" />;
-  };
 
   useEffect(() => {
-    setIsTokenValidated(isLoggedIn());
+
+    isLoggedIn().then(result =>{
+      console.log(result)
+      setIsTokenValidated(result.auth);
+      setUserId(result.id);
+   
+    });         
+  
   }, []);
 
   return (
@@ -62,15 +60,12 @@ function App() {
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
-        {
-          isTokenValidated ? (
-            <Route element={<PrivateOutlet />}>
-              <Route path="profile/:id" element={<Profile />} />
-            </Route>
+         {isTokenValidated ? (
+            <Route path="profile/:id" element={<Profile />} />
           ) : (
             <Route exact path="/3" element={<Login />}></Route>
           ) // test to see if non auth users can access /3 while auth can
-        }
+        } 
         {/* <Route exact path="/" element={}></Route> */}
       </Routes>
     </>

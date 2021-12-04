@@ -1,13 +1,15 @@
-import { React, useEffect, useState, useCallback} from 'react';
+import { React, useEffect, useState, useCallback } from 'react';
 import { resetPassword, getUser } from "../services/userService"
 import { useParams } from "react-router-dom";
 
 const Profile = (props) => {
+
   const { id } = useParams();
   const [changePassword, setChangePassword] = useState({
     password: "",
     newPassword: "",
   });
+
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -35,18 +37,20 @@ const Profile = (props) => {
   const retrieveUser = useCallback(async () => {
     var result = await getUser(id);
     if (result !== null) {
+  
       return result;
     }
   });
   useEffect(() => {
-    retrieveUser().then(result =>
-      setUser({username: result.username, email: result.email})
-      );
-    //setUser({email: props.email});
-    //retrieveUser(props.email);
-  }, [])  
+  
+      retrieveUser().then(result =>{
+        setUser({username: result.username, email: result.email})
+      });  
+    
+  }, []);
   return(
         <div>
+          
         <div className="w-50 container shadow my-5">
           <div className = "w-100 text-center">
             <div className="p-5 d-inline-block">
