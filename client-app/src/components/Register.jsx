@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
+import { register } from "../services/userService"
 
 const Register = () => {
 
@@ -15,33 +16,16 @@ const Register = () => {
       const { name, value } = event.target;
       setUser({ ...user, [name]: value });
     };
-
     const registerUser = async (e) => {
-
       e.preventDefault();
-
       const {username, password, email} = user;
-    
-      const req = await fetch('/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        
-        body: JSON.stringify({username:username, password:password, email:email})
-      });
-
-      console.log(req.status)
-      if (req.status === 200) {
+      var result = await register(username, password, email)
+      if(result === 'success'){
         navigate('/login', { replace: true })
         window.location.reload();
-      } else {
-        window.alert("could not register");
-        
       }
-      console.log(req);
-      return req;
-     }
+    }
+    
      
     return (
         <div>

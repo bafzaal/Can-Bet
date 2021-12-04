@@ -1,39 +1,24 @@
-import React, {useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../services/userService";
 const Logout = () => {
-
   let navigate = useNavigate();
- 
+
   useEffect(() => {
-    logoutUser()
+    logoutUser();
   }, []);
 
   const logoutUser = async (e) => {
-    try {
-      const req = await fetch("/logout", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      });
+      
+    var result = await logout();
 
-      if (req.status === 202) {
-        navigate('/', { replace: true })
-        window.location.reload();
-      } else {
-        window.alert("did not clear cookie");
-        
-      }
-    } catch (error) {
-      console.log(error);
+    if (result === "success") {
+      navigate("/", { replace: true });
+      window.location.reload();
     }
   };
 
-  return (
-    <div></div>
-  )
-}
-
+  return <div></div>;
+};
 
 export default Logout;

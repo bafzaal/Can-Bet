@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate} from "react-router-dom";
+import { NavLink, } from "react-router-dom";
+import { login } from "../services/userService"
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 
-  let navigate = useNavigate();
-
-  const [user, setUser] = useState({
+    let navigate = useNavigate();
+    const [user, setUser] = useState({
     password: "",
     email: "",
   });
@@ -17,24 +18,11 @@ const Login = () => {
 
   const loginUser = async (e) => {
     e.preventDefault();
-    const { password, email } = user;
-    try {
-      const req = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: password, email: email }),
-      });
-
-      if (req.status === 400) {
-        window.alert("Incorrect password");
-      } else {
-         navigate('/', { replace: true })
-         window.location.reload();
-      }
-    } catch (error) {
-      console.log(error);
+    const { email, password } = user;
+    var result = await login(email, password)
+    if(result === 'success'){
+      navigate('/', { replace: true })
+      window.location.reload();
     }
   };
 
