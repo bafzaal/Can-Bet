@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { React, useEffect, useState, useCallback} from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import {Routes, Route, Navigate, Outlet} from "react-router-dom";
@@ -7,19 +7,14 @@ import Logout from './components/Logout';
 import Register from './components/Register';
 import Profile from './components/Profile';
 
+
 function App() {
 
-  const [valid, setValid] = useState(false);
-  const [invalid, setInvalid] = useState(true);
+  const [isTokenValidated, setIsTokenValidated] = useState(false);
 
-  const PrivateOutlet = () => {
-    isLoggedIn();
-    if(invalid) return <Navigate to="/login" />
-    if(valid) return <Outlet />
-    else return <Navigate to="/login" />
-  }
   
-  const isLoggedIn = useCallback (async () => {
+  const isLoggedIn =  useCallback(async () => {
+  
     try 
     {
       const req = await fetch("/authentication", {
@@ -28,45 +23,74 @@ function App() {
           "Content-Type": "application/json",
         }
       });
-  
+
       if (req.status === 200) 
       {
-        setValid(true);
-        setInvalid(false);
+
+        setIsTokenValidated(true);
+
+        return true;
       } 
       else 
-      {
-        setValid(false);
-        setInvalid(true);
+      { 
+        setIsTokenValidated(false);
+ 
+        return false;
       }
 
     } catch (error) {
-      console.log(error);
+      console.log('error '+error);
     }
+    return false;
+    
   });
+ 
 
-  useEffect(() => {
+  const PrivateOutlet = () => {
+ 
+ 
     isLoggedIn();
-  }, [isLoggedIn])
+    if(isTokenValidated) return  <Outlet />
+    else return  <Navigate to="/login" />
+
+    
+
+  };
+  useEffect(() => {
+
+    setIsTokenValidated(isLoggedIn());
+
+  }, [])
+
+
+
 
   return (
+
     <>
-      <Navbar isAuth={valid}/>
+      <Navbar isAuth={isTokenValidated}/>
       <Routes>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
-
-        <Route path="/profile" element={<PrivateOutlet />}>
-          <Route path="" element={<Profile />} />
+        {isTokenValidated ? 
+      
+        <Route element={<PrivateOutlet />}>
+          <Route path="/profile" element={<Profile />} />
         </Route>
-
+      :
+      <Route exact path="/3" element={<Login />}></Route> // test to see if non auth users can access /3 while auth can
+      
+        }
         {/* <Route exact path="/" element={}></Route> */}
       </Routes>
     </>
+
+
   );
 }
 
 
-export default App;
 
+
+export default App;
