@@ -103,8 +103,20 @@ app.get("/authentication", async (req, res) => {
 app.get("/profile", async (req, res) => {
   try{
     //if not null 
-  console.log(req.query.id)
-  //const email = req.body.email;
+  const user = await Users.findById(req.query.id).exec();
+  if(user)
+    user.remove();
+    } catch(e) {
+      console.log('error:-', e)
+  }
+  console.log('User successfully deleted!');
+  res.status(200).send();
+});
+
+// get User
+app.delete("/profile", async (req, res) => {
+  try{
+    //if not null 
   const user = await Users.findById(req.query.id).exec();
   if(user)
     res.json(user);
@@ -112,7 +124,6 @@ app.get("/profile", async (req, res) => {
       console.log('error:-', e)
   }
 
-  console.log("made it!")
 });
 
 // Update user
@@ -122,13 +133,19 @@ app.post("/newPassword", async (req, res) => {
     const userId = req.body.id;
     const password = req.body.oldPassword;
     const newpassword = req.body.password;
+    const username = req.body.username;
+    const email = req.body.email
+   
     // Find User
     const user = await Users.findById(userId).exec();
     if (user) {
       // Check Password
       const match = await bcryptjs.compare(password, user.password);
       if (match) {
-        user.password = newpassword;
+        if(newpassword != null &&  newpassword != "")
+          user.password = newpassword;
+        user.username = username;
+        user.email = email;
         await user.save();
         res.status(200).send("Updated Successfully");
       } else {

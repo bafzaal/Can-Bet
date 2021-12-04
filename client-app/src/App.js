@@ -8,6 +8,7 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 
 function App() {
+  
   const [isTokenValidated, setIsTokenValidated] = useState(false);
 
   const [userId, setUserId] = useState("");

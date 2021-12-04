@@ -103,7 +103,7 @@ const getUser = async (id) => {
   return result;
 };
 
-const resetPassword = async (oldPassword, newPassword, id) => {
+const resetPassword = async (oldPassword, newPassword, username, email,id) => {
   try {
     const req = await fetch("/newPassword", {
       method: "POST",
@@ -114,10 +114,11 @@ const resetPassword = async (oldPassword, newPassword, id) => {
       body: JSON.stringify({
         oldPassword: oldPassword,
         password: newPassword,
+        username: username,
+        email: email,
         id: id,
       }),
     });
-
     if (req.status === 200) {
       return "success";
     } else {

@@ -23,11 +23,14 @@ const Profile = (props) => {
   const newPasswordUser = async (e) => {
     e.preventDefault();
     const {password, newPassword } = changePassword;
-    var result = await resetPassword(password, newPassword, id)
+    const {username, email} = user;
+    if (window.confirm('Are you sure you wish to delete this item?')){
+    var result = await resetPassword(password, newPassword, username, email, id)
     if(result === 'success'){
       //navigate('/', { replace: true })
       window.location.reload();
     }
+  }
   };
   const retrieveUser = useCallback(async () => {
     var result = await getUser(id);
@@ -51,15 +54,18 @@ const Profile = (props) => {
               <form onSubmit={newPasswordUser}>
               <div className="mb-3">
                   <label htmlFor="exampleInputUsername" className="form-label">
-                    {user.email}
+
+                    Username
                   </label>
                   <input
-                    type="email"
+                    type="username"
                     className="form-control"
                     id="exampleInputName"
                     name="username"
                     aria-describedby="usernameHelp"
-
+                    placeholder = {user.username}
+                    onChange={handleOnChange}
+                    value={user.username}
                   />
                 </div>
                 <div className="mb-3">
@@ -72,7 +78,9 @@ const Profile = (props) => {
                     id="exampleInputEmail1"
                     name="email"
                     aria-describedby="emailHelp"
-
+                    placeholder = {user.email}
+                    onChange={handleOnChange}
+                    value={user.email}
                   />
                 </div>
                 <div className="mb-3">
@@ -103,10 +111,11 @@ const Profile = (props) => {
                 </div>
                 <button
                   type="submit"
-                  className="btn w-100 mt-4 rounded-pill btn-outline-danger"
+                  className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger"
                 >
                   Submit
                 </button>
+                <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
               </form>
             </div>
           </div>
