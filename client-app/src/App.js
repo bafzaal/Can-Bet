@@ -1,11 +1,13 @@
 import { React, useEffect, useState, useCallback } from "react";
 import "./App.css";
+import "./scss/style.scss";
 import Navbar from "./components/Navbar";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
+import Home from "./components/Home";
 
 function App() {
   
@@ -56,11 +58,13 @@ function App() {
     <>
       <Navbar isAuth={isTokenValidated} id={userId} />
       <Routes>
+        <Route exact path="/" element={<Home />}></Route>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
          {isTokenValidated ? (
-            <Route path="profile/:id" element={<Profile />} />
+            <Route path="/profile/:id" element={<Profile />}>  
+            </Route>
           ) : (
             <Route exact path="/3" element={<Login />}></Route>
           ) // test to see if non auth users can access /3 while auth can
