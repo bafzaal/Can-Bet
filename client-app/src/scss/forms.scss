@@ -6,19 +6,16 @@
   background-image: linear-gradient(147deg, #c62128 0%, #a00000 74%);
 }
 
-.heading{
-  padding: 3rem;
-}
-
-h1 {
+.headingLine {
   font-family: 'Arvo', serif;
   display: flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
+  padding: 3rem;
 }
 
-h1:after, h1:before {
+.headingLine:after, .headingLine:before {
   content: '';
   width: 150px;
   height: 2px;
@@ -47,4 +44,11 @@ h1:after, h1:before {
   align-items: center !important;
   width: 100% !important;
   height: 100vh !important;
+}
+
+.text-strike
+{
+  background-color: green !important;
+  color: white !important;
+  padding: 2px;
 }

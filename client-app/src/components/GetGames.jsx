@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ClipLoader from "react-spinners/ClipLoader";
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import NFL from '../images/NFL.png'
 import UNIBET from '../images/UNIBET.jpeg'
 import BarstoolSportsbook from '../images/Barstool-Sportsbook.png'
@@ -35,12 +35,13 @@ function GetGames(props) {
     const { games } = props
 
     const [loading, setLoading] = useState(false);
+    var bestOdds = [];
 
     useEffect(() => {
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
-        }, 1000)
+        }, 1500)
     }, [])
 
     const mapGames = [] // [{game name, unitbet, ...}] game name, map to values
@@ -88,6 +89,36 @@ function GetGames(props) {
 
 
     console.log("hi", mapGames)
+
+    Array.from(mapGames).forEach(function(item) {
+        var currBestOdds = [[0,0]]
+        if(Object.entries(item)[1][1].unibet[0] > currBestOdds[0][0])
+            currBestOdds[0][0] = Object.entries(item)[1][1].unibet[0];
+        if(Object.entries(item)[1][1].unibet[0] > currBestOdds[0][1])
+            currBestOdds[0][1] = Object.entries(item)[1][1].unibet[1];
+
+        if(Object.entries(item)[1][1].barstool[0] > currBestOdds[0][0])
+            currBestOdds[0][0] = Object.entries(item)[1][1].barstool[0];
+        if(Object.entries(item)[1][1].barstool[0] > currBestOdds[0][1])
+            currBestOdds[0][1] = Object.entries(item)[1][1].barstool[1];
+
+        if(Object.entries(item)[1][1].draftkings[0] > currBestOdds[0][0])
+            currBestOdds[0][0] = Object.entries(item)[1][1].draftkings[0];
+        if(Object.entries(item)[1][1].draftkings[0] > currBestOdds[0][1])
+            currBestOdds[0][1] = Object.entries(item)[1][1].draftkings[1];
+
+        if(Object.entries(item)[1][1].fanduel[0] > currBestOdds[0][0])
+            currBestOdds[0][0] = Object.entries(item)[1][1].fanduel[0];
+        if(Object.entries(item)[1][1].fanduel[0] > currBestOdds[0][1])
+            currBestOdds[0][1] = Object.entries(item)[1][1].fanduel[1];
+
+        if(Object.entries(item)[1][1].foxbet[0] > currBestOdds[0][0])
+            currBestOdds[0][0] = Object.entries(item)[1][1].foxbet[0];
+        if(Object.entries(item)[1][1].foxbet[0] > currBestOdds[0][1])
+            currBestOdds[0][1] = Object.entries(item)[1][1].foxbet[1];
+        bestOdds.push(currBestOdds)
+    })
+    console.log(bestOdds)
     return (
         <div>
             {
@@ -97,7 +128,7 @@ function GetGames(props) {
                     </div>
                     :
                     <>
-                        <h1 className="text-center heading">NFL MONEYLINE ODDS</h1>
+                        <h1 className="text-center headingLine">NFL MONEYLINE ODDS</h1>
                         <ReactBootStrap.Table striped bordered hover responsive className="OddsTable">
                             <thead>
                                 <tr>
@@ -112,14 +143,14 @@ function GetGames(props) {
                             <tbody>
 
                                 {
-                                    mapGames.map(game => {
+                                    mapGames.map((game, i) => {
                                         return <tr key={game.id}>
                                             <td className="text-center">{game.gameNames[0]} <br />{game.gameNames[1]} </td>
-                                            <td className="text-center">{game.oddsMap.unibet[0]} / {game.oddsMap.unibet[2]} <br />{game.oddsMap.unibet[1]} / {game.oddsMap.unibet[3]}</td>
-                                            <td className="text-center">{game.oddsMap.barstool[0]} / {game.oddsMap.barstool[2]} <br />{game.oddsMap.barstool[1]} / {game.oddsMap.barstool[3]}</td>
-                                            <td className="text-center">{game.oddsMap.draftkings[0]} / {game.oddsMap.draftkings[2]} <br />{game.oddsMap.draftkings[1]} / {game.oddsMap.draftkings[3]}</td>
-                                            <td className="text-center">{game.oddsMap.fanduel[0]} / {game.oddsMap.fanduel[2]} <br />{game.oddsMap.fanduel[1]} / {game.oddsMap.fanduel[3]}</td>
-                                            <td className="text-center">{game.oddsMap.foxbet[0]} / {game.oddsMap.foxbet[2]} <br />{game.oddsMap.foxbet[1]} / {game.oddsMap.foxbet[3]}</td>
+                                            <td className="text-center"><span className={game.oddsMap.unibet[0] != null && game.oddsMap.unibet[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[0]} / {game.oddsMap.unibet[2]}</span> <br /><span className={game.oddsMap.unibet[1] != null && game.oddsMap.unibet[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[1]} / {game.oddsMap.unibet[3]}</span></td>
+                                            <td className="text-center"><span className={game.oddsMap.barstool[0] != null && game.oddsMap.barstool[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[0]} / {game.oddsMap.barstool[2]}</span> <br /><span className={game.oddsMap.barstool[1] != null && game.oddsMap.barstool[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[1]} / {game.oddsMap.barstool[3]}</span></td>
+                                            <td className="text-center"><span className={game.oddsMap.draftkings[0] != null && game.oddsMap.draftkings[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[0]} / {game.oddsMap.draftkings[2]}</span> <br /><span className={game.oddsMap.draftkings[1] != null && game.oddsMap.draftkings[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[1]} / {game.oddsMap.draftkings[3]}</span></td>
+                                            <td className="text-center"><span className={game.oddsMap.fanduel[0] != null && game.oddsMap.fanduel[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.fanduel[0]} / {game.oddsMap.fanduel[2]}</span>  <br /><span className={game.oddsMap.fanduel[1] != null && game.oddsMap.fanduel[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.fanduel[1]} / {game.oddsMap.fanduel[3]}</span></td>
+                                            <td className="text-center"><span className={game.oddsMap.foxbet[0] != null && game.oddsMap.foxbet[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.foxbet[0]} / {game.oddsMap.foxbet[2]}</span> <br /><span className={game.oddsMap.foxbet[1] != null && game.oddsMap.foxbet[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.foxbet[1]} / {game.oddsMap.foxbet[3]}</span></td>
                                         </tr>
                                     })
                                 }
