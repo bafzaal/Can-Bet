@@ -53,15 +53,15 @@ function GetGames(props) {
                     <li key={game.id}>{game.teams}</li>
                 ))}
             </ul> */}
-            <ReactBootStrap.Table>
+            <ReactBootStrap.Table striped bordered hover>
                 <thead>
-                    <tr>
-                        <td>TEAMS</td>
-                        <td>unibet</td>
-                        <td>barstool</td>
-                        <td>draftkings</td>
-                        <td>fanduel</td>
-                        <td>foxbet</td>
+                    <tr className="danger">
+                        <td>Teams</td>
+                        <td>Unibet</td>
+                        <td>Barstool</td>
+                        <td>DraftKings</td>
+                        <td>Fanduel</td>
+                        <td>FoxBet</td>
                         {/* <td>bookmaker</td>
                         {
                             
