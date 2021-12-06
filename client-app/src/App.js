@@ -8,6 +8,7 @@ import Logout from "./components/Logout";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
+import BettingLines from "./components/BettingLines";
 
 function App() {
   
@@ -59,6 +60,7 @@ function App() {
       <Navbar isAuth={isTokenValidated} id={userId} />
       <Routes>
         <Route exact path="/" element={<Home />}></Route>
+        <Route exact path="/betting-lines" element={<BettingLines />}></Route>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
