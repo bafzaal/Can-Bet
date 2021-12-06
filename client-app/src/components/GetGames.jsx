@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import NFL from '../images/NFL.png'
+import BetMGM from '../images/betmgm.png'
 import * as ReactBootStrap from 'react-bootstrap';
 
 GetGames.propTypes = {
@@ -55,9 +57,9 @@ function GetGames(props) {
             </ul> */}
             <ReactBootStrap.Table striped bordered hover>
                 <thead>
-                    <tr className="danger">
-                        <td>Teams</td>
-                        <td>Unibet</td>
+                    <tr>
+                        <td className="text-center"><img width="72" height="100" src={NFL} /></td>
+                        <td><img width="72" height="100" src={BetMGM} />BetMGM</td>
                         <td>Barstool</td>
                         <td>DraftKings</td>
                         <td>Fanduel</td>
