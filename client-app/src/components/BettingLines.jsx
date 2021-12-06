@@ -116,6 +116,8 @@ const BettingLines = () => {
                 </tbody>
             </ReactBootStrap.Table> */}
             <GetGames games={games}></GetGames>
+            {/* <NBAGames> */}
+            {/* <NBAGames> */}
         </div>
     );
 }
