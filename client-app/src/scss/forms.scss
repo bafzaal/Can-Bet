@@ -38,3 +38,13 @@ h1:after, h1:before {
   padding-left: 5rem !important;
   padding-right: 5rem !important;
 }
+
+.loading
+{
+  text-align: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100vh !important;
+}
