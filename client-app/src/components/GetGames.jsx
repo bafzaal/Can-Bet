@@ -16,6 +16,9 @@ GetGames.defaultProps = {
     games: [],
 };
 
+var currentDate = new Date()
+var currentDateTime
+
 function GetAmericanOdds(odds) {
     const americanOdds = []
     if (odds[0] >= 2)
@@ -44,7 +47,7 @@ function GetGames(props) {
         }, 1500)
     }, [])
 
-    const mapGames = [] // [{game name, unitbet, ...}] game name, map to values
+    const mapGames = [] // [{game name, unitbet, ...}] game name, game time, map to values
     games.forEach(function (item) {
         var unibet = []
         var barstool = []
@@ -84,7 +87,11 @@ function GetGames(props) {
             }
 
         });
-        mapGames.push({ gameNames: item.teams, oddsMap: { unibet: unibet, barstool: barstool, draftkings: draftkings, fanduel: fanduel, foxbet: foxbet } })
+        var gameDate = new Date(item.commence_time * 1000); // according to local time zone
+        //localDate.setUTCMinutes(item.commence_time)
+        //console.log()
+        currentDateTime = "Last Updated: " + currentDate.toLocaleString()
+        mapGames.push({ gameNames: item.teams, oddsMap: { unibet: unibet, barstool: barstool, draftkings: draftkings, fanduel: fanduel, foxbet: foxbet }, gameTime: gameDate.toLocaleString() })
     });
 
 
@@ -145,7 +152,7 @@ function GetGames(props) {
                                 {
                                     mapGames.map((game, i) => {
                                         return <tr key={game.id}>
-                                            <td className="text-center">{game.gameNames[0]} <br />{game.gameNames[1]} </td>
+                                            <td className="text-center">{game.gameNames[0]} <br />{game.gameNames[1]} <br /><p className="text-danger">{game.gameTime}</p></td>
                                             <td className="text-center"><span className={game.oddsMap.unibet[0] != null && game.oddsMap.unibet[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[0]} / {game.oddsMap.unibet[2]}</span> <br /><span className={game.oddsMap.unibet[1] != null && game.oddsMap.unibet[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[1]} / {game.oddsMap.unibet[3]}</span></td>
                                             <td className="text-center"><span className={game.oddsMap.barstool[0] != null && game.oddsMap.barstool[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[0]} / {game.oddsMap.barstool[2]}</span> <br /><span className={game.oddsMap.barstool[1] != null && game.oddsMap.barstool[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[1]} / {game.oddsMap.barstool[3]}</span></td>
                                             <td className="text-center"><span className={game.oddsMap.draftkings[0] != null && game.oddsMap.draftkings[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[0]} / {game.oddsMap.draftkings[2]}</span> <br /><span className={game.oddsMap.draftkings[1] != null && game.oddsMap.draftkings[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[1]} / {game.oddsMap.draftkings[3]}</span></td>
@@ -156,7 +163,10 @@ function GetGames(props) {
                                 }
 
                             </tbody>
+                            
                         </ReactBootStrap.Table>
+                        <p>{currentDateTime}</p>
+                        
                     </>
             }
         </div>
