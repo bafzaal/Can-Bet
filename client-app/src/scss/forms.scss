@@ -1,54 +1,64 @@
 @import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap');
 
 /* FORM */
-.form{
-  background-color: #c62128;
-  background-image: linear-gradient(147deg, #c62128 0%, #a00000 74%);
+
+.form {
+    background-color: #c62128;
+    background-image: linear-gradient(147deg, #c62128 0%, #a00000 74%);
 }
 
 .headingLine {
-  font-family: 'Arvo', serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  padding: 3rem;
+    font-family: 'Arvo', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    padding: 3rem;
 }
 
-.headingLine:after, .headingLine:before {
-  content: '';
-  width: 150px;
-  height: 2px;
-  background: red;
-  margin: 0 10px;
+.headingLine:after,
+.headingLine:before {
+    content: '';
+    width: 150px;
+    height: 2px;
+    background: red;
+    margin: 0 10px;
 }
 
-.OddsTable
-{
-  width:20px !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
+.OddsTable {
+    width: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
-.NFLLogo
-{
-  padding-left: 5rem !important;
-  padding-right: 5rem !important;
+.NFLLogo {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
 }
 
-.loading
-{
-  text-align: center !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  height: 100vh !important;
+.loading {
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100vh !important;
 }
 
-.text-strike
-{
-  background-color: green !important;
-  color: white !important;
-  padding: 2px;
+.text-strike {
+    background-color: green !important;
+    color: white !important;
+    padding: 2px;
+}
+
+.mrgn-btm-3p {
+    margin-bottom: 3%;
+}
+
+.mrgn-rt-5px {
+    margin-right: 5px;
+}
+
+.hover-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
 }

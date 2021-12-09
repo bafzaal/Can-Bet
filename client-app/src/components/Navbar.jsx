@@ -24,6 +24,9 @@ const Navbar = (props) => {
                             <li className="nav-item">
                                 <NavLink to="/" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
                             </li>
+                            <li className="nav-item">
+                                <NavLink to="/upcoming/games" className="nav-link" href="#">Games</NavLink> {/*Placeholder*/}
+                            </li>
                         </ul>
                         <a className="navbar-brand fw-bolder fs-4 mx-auto" href="/"><img width="136" height="38" src={logo} /></a>
                         {props.isAuth ?       
