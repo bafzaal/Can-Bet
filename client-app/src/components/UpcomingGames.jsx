@@ -5,19 +5,10 @@ import { Row, Form, Container, Col, Button } from "react-bootstrap";
 import ShowUpcoming from "./ShowUpcoming"
 
 const UpcomingGames = () => {
-    const [date, setDate] = useState(null);
     const chosenDate = useRef()
     const chosenLeague = useRef()
 
     let today = new Date().toISOString().split("T")[0]
-
-    function showGames(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        let filterdate = new Date(chosenDate.current.value)
-        console.log(filterdate)
-        console.log(chosenLeague.current.value)
-    }
 
     const [posts, setLines] = useState({ lines: [] });
     // const [games, setGames] = useState({
@@ -29,6 +20,7 @@ const UpcomingGames = () => {
     //     }
     // });
     const [games, setGames] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const apiKey = "dd1b6318c41925cc94e2ff981593aa0e"
     const url = `https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds?apiKey=${apiKey}&regions=us`
@@ -44,6 +36,15 @@ const UpcomingGames = () => {
     useEffect(() => {
         getAllLines();
     }, [setLines])
+    
+    function showGames(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(chosenDate.current.value)
+        let filterDate = new Date(chosenDate.current.value + " 00:00:00")
+        console.log(filterDate)
+        setSelectedDate(filterDate)
+    }
 
     const getAllLines = () => {
         axios.get('https://api.the-odds-api.com/v3/odds', {
@@ -78,7 +79,7 @@ const UpcomingGames = () => {
                         <Form>
                             <Row>
                                 <Col xs={{ span: 5, offset: 1 }}>
-                                    <Form.Control ref={chosenDate} type="date" placeholder="Today" defaultValue={today} onChange={date => setDate(date)} />
+                                    <Form.Control ref={chosenDate} type="date" defaultValue={today} />
                                 </Col>
                                 <Col xs="4">
                                     <Form.Select ref={chosenLeague}>
@@ -96,7 +97,7 @@ const UpcomingGames = () => {
                         </Form>
                     </Col>
                 </Row>
-                <ShowUpcoming games={games}></ShowUpcoming>
+                <ShowUpcoming games={games} selectedDate={selectedDate}></ShowUpcoming>
             </Container>
         </>
     );
