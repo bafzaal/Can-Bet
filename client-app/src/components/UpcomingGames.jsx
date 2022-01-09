@@ -21,14 +21,12 @@ const UpcomingGames = () => {
     // });
     const [games, setGames] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedLeague, setSelectedLeague] = useState("americanfootball_nfl")
+    const [selectedLeague, setSelectedLeague] = useState("All")
 
     const apiKey = "dd1b6318c41925cc94e2ff981593aa0e"
     const url = `https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds?apiKey=${apiKey}&regions=us`
 
     const api_key = 'dd1b6318c41925cc94e2ff981593aa0e'
-
-    const sport_key = 'americanfootball_nfl' // use the sport_key from the /sports endpoint below, or use 'upcoming' to see the next 8 games across all sports
 
     const region = 'us' // uk | us | eu | au
 
@@ -45,6 +43,7 @@ const UpcomingGames = () => {
         e.stopPropagation();
         let filterDate = new Date(chosenDate.current.value + " 00:00:00")
         setSelectedDate(filterDate)
+        setSelectedLeague(chosenLeague.current.value)
     }
 
     const getAllLines = () => {
@@ -64,7 +63,6 @@ const UpcomingGames = () => {
             let results = arrOfResults.map((response) => {
                 return response.data.data
             })
-            console.log(results.flat())
             setGames(results.flat())
         })
     }
@@ -98,7 +96,7 @@ const UpcomingGames = () => {
                         </Form>
                     </Col>
                 </Row>
-                <ShowUpcoming games={games} selectedDate={selectedDate}></ShowUpcoming>
+                <ShowUpcoming games={games} selectedDate={selectedDate} selectedLeague={selectedLeague}></ShowUpcoming>
             </Container>
         </>
     );

@@ -12,24 +12,26 @@ import { Form, Card, Button, Row, Col } from 'react-bootstrap'
 
 ShowUpcoming.propTypes = {
     games: PropTypes.array,
-    selectedDate: PropTypes.instanceOf(Date)
+    selectedDate: PropTypes.instanceOf(Date),
+    selectedLeague: PropTypes.string
 };
 ShowUpcoming.defaultProps = {
     games: [],
-    selectedDate: new Date()
+    selectedDate: new Date(),
+    selectedLeague: "All"
 };
 
 var currentDate = new Date()
 var currentDateTime
+
 
 function datesAreOnSameDay(first, second) {
     return (first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate())
 }
 
 function ShowUpcoming(props) {
-    const { games, selectedDate } = props
+    const { games, selectedDate, selectedLeague } = props
     const [loading, setLoading] = useState(false);
-    var bestOdds = [];
 
     useEffect(() => {
         setLoading(true)
@@ -39,7 +41,6 @@ function ShowUpcoming(props) {
     }, [])
 
     const mapGames = [] // [{game name, unitbet, ...}] game name, game time, map to values
-    console.log(games)
     games.forEach(function (item) {
         var gameDate = new Date(item.commence_time * 1000); // according to local time zone
         //localDate.setUTCMinutes(item.commence_time)
@@ -51,10 +52,16 @@ function ShowUpcoming(props) {
             mapGames.push({ gameNames: item.teams, league: item.sport_nice, gameTime: gameDate.toLocaleDateString(undefined, options) + " (" + gameDate.toLocaleTimeString(undefined, options_time) + ")" })
         }
     });
-    console.log(mapGames)
-    let nhlGames = mapGames.filter((game) => {return game.league == "NHL"})
-    let nflGames = mapGames.filter((game) => {return game.league == "NFL"})
-    let nbaGames = mapGames.filter((game) => {return game.league == "NBA"})
+    let nhlGames = mapGames.filter((game) => { return game.league == "NHL" })
+    let nflGames = mapGames.filter((game) => { return game.league == "NFL" })
+    let nbaGames = mapGames.filter((game) => { return game.league == "NBA" })
+    let showNHL = selectedLeague == "NHL" || selectedLeague == "All"
+    let showNFL = selectedLeague == "NFL" || selectedLeague == "All"
+    let showNBA = selectedLeague == "NBA" || selectedLeague == "All"
+    let noGamesNHL = nhlGames.length == 0
+    let noGamesNFL = nflGames.length == 0
+    let noGamesNBA = nbaGames.length == 0
+
     return (
         <div>
             {
@@ -65,10 +72,15 @@ function ShowUpcoming(props) {
                     :
                     <>
                         <Row>
-                        <h5 className="headingLine">NFL</h5>
-                        {
-                            nflGames.map((game, i) => {
-                                return <Col xs="6" key={game.id}>
+                            {showNFL &&
+                                <h5 className="headingLine">NFL</h5>
+                            }
+                            {noGamesNFL &&
+                                <p className="text-center">No NFL Games Today</p>
+                            }
+                            {showNFL &&
+                                nflGames.map((game, i) => {
+                                    return <Col xs="6" key={game.id}>
                                         <Card className="mrgn-btm-3p hover-card">
                                             <Card.Body>
                                                 <Row className="mrgn-btm-3p">
@@ -96,12 +108,17 @@ function ShowUpcoming(props) {
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                            })
-                        }
-                        <h5 className="headingLine">NBA</h5>
-                        {
-                            nbaGames.map((game, i) => {
-                                return <Col xs="6" key={game.id}>
+                                })
+                            }
+                            {showNHL &&
+                                <h5 className="pull-left headingLine">NHL</h5>
+                            }
+                            {noGamesNHL &&
+                                <p className="text-center">No NHL Games Today</p>
+                            }
+                            {showNHL &&
+                                nhlGames.map((game, i) => {
+                                    return <Col xs="6" key={game.id}>
                                         <Card className="mrgn-btm-3p hover-card">
                                             <Card.Body>
                                                 <Row className="mrgn-btm-3p">
@@ -129,12 +146,17 @@ function ShowUpcoming(props) {
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                            })
-                        }
-                        <h5 className="headingLine">NHL</h5>
-                        {
-                            nhlGames.map((game, i) => {
-                                return <Col xs="6" key={game.id}>
+                                })
+                            }
+                            {showNBA &&
+                                <h5 className="headingLine">NBA</h5>
+                            }
+                            {noGamesNBA &&
+                                <p className="text-center">No NBA Games Today</p>
+                            }
+                            {showNBA &&
+                                nbaGames.map((game, i) => {
+                                    return <Col xs="6" key={game.id}>
                                         <Card className="mrgn-btm-3p hover-card">
                                             <Card.Body>
                                                 <Row className="mrgn-btm-3p">
@@ -162,8 +184,8 @@ function ShowUpcoming(props) {
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                            })
-                        }
+                                })
+                            }
                         </Row>
                         <p>{currentDateTime}</p>
 
