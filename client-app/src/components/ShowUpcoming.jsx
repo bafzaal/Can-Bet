@@ -39,6 +39,7 @@ function ShowUpcoming(props) {
     }, [])
 
     const mapGames = [] // [{game name, unitbet, ...}] game name, game time, map to values
+    console.log(games)
     games.forEach(function (item) {
         var gameDate = new Date(item.commence_time * 1000); // according to local time zone
         //localDate.setUTCMinutes(item.commence_time)
@@ -46,11 +47,14 @@ function ShowUpcoming(props) {
         const options = { weekday: 'long', month: 'long', day: 'numeric' };
         const options_time = { hour: "numeric", minute: "2-digit" }
         currentDateTime = "Last Updated: " + currentDate.toLocaleString()
-        if(datesAreOnSameDay(gameDate, selectedDate)) {
-            mapGames.push({ gameNames: item.teams, gameTime: gameDate.toLocaleDateString(undefined, options) + " (" + gameDate.toLocaleTimeString(undefined, options_time) + ")" })
+        if (datesAreOnSameDay(gameDate, selectedDate)) {
+            mapGames.push({ gameNames: item.teams, league: item.sport_nice, gameTime: gameDate.toLocaleDateString(undefined, options) + " (" + gameDate.toLocaleTimeString(undefined, options_time) + ")" })
         }
     });
-    
+    console.log(mapGames)
+    let nhlGames = mapGames.filter((game) => {return game.league == "NHL"})
+    let nflGames = mapGames.filter((game) => {return game.league == "NFL"})
+    let nbaGames = mapGames.filter((game) => {return game.league == "NBA"})
     return (
         <div>
             {
@@ -61,9 +65,10 @@ function ShowUpcoming(props) {
                     :
                     <>
                         <Row>
-                            {
-                                mapGames.map((game, i) => {
-                                    return <Col xs="6" key={game.id}>
+                        <h5 className="headingLine">NFL</h5>
+                        {
+                            nflGames.map((game, i) => {
+                                return <Col xs="6" key={game.id}>
                                         <Card className="mrgn-btm-3p hover-card">
                                             <Card.Body>
                                                 <Row className="mrgn-btm-3p">
@@ -91,8 +96,74 @@ function ShowUpcoming(props) {
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                                })
-                            }
+                            })
+                        }
+                        <h5 className="headingLine">NBA</h5>
+                        {
+                            nbaGames.map((game, i) => {
+                                return <Col xs="6" key={game.id}>
+                                        <Card className="mrgn-btm-3p hover-card">
+                                            <Card.Body>
+                                                <Row className="mrgn-btm-3p">
+                                                    <Col>
+                                                        <Card.Text>
+                                                            <strong> {game.gameTime} </strong> <br />
+                                                            {game.gameNames[1]} at
+                                                            <br />
+                                                            {game.gameNames[0]}
+                                                        </Card.Text>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col xs="8">
+                                                        <img height="30px" className="mrgn-rt-5px" src={BarstoolSportsbook}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={UNIBET}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={FanDuel}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={DraftKings}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={FoxBet}></img>
+                                                    </Col>
+                                                    <Col xs="4">
+                                                        <Button variant="primary" className="pull-right">Odds</Button>
+                                                    </Col>
+                                                </Row>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                            })
+                        }
+                        <h5 className="headingLine">NHL</h5>
+                        {
+                            nhlGames.map((game, i) => {
+                                return <Col xs="6" key={game.id}>
+                                        <Card className="mrgn-btm-3p hover-card">
+                                            <Card.Body>
+                                                <Row className="mrgn-btm-3p">
+                                                    <Col>
+                                                        <Card.Text>
+                                                            <strong> {game.gameTime} </strong> <br />
+                                                            {game.gameNames[1]} at
+                                                            <br />
+                                                            {game.gameNames[0]}
+                                                        </Card.Text>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col xs="8">
+                                                        <img height="30px" className="mrgn-rt-5px" src={BarstoolSportsbook}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={UNIBET}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={FanDuel}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={DraftKings}></img>
+                                                        <img height="30px" className="mrgn-rt-5px" src={FoxBet}></img>
+                                                    </Col>
+                                                    <Col xs="4">
+                                                        <Button variant="primary" className="pull-right">Odds</Button>
+                                                    </Col>
+                                                </Row>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                            })
+                        }
                         </Row>
                         <p>{currentDateTime}</p>
 

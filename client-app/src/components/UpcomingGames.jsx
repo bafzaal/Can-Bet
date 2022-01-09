@@ -21,6 +21,7 @@ const UpcomingGames = () => {
     // });
     const [games, setGames] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedLeague, setSelectedLeague] = useState("americanfootball_nfl")
 
     const apiKey = "dd1b6318c41925cc94e2ff981593aa0e"
     const url = `https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds?apiKey=${apiKey}&regions=us`
@@ -33,6 +34,8 @@ const UpcomingGames = () => {
 
     const market = 'h2h' // h2h | spreads | totals
 
+    const league_keys = ["americanfootball_nfl", "icehockey_nhl", "basketball_nba"]
+
     useEffect(() => {
         getAllLines();
     }, [setLines])
@@ -40,32 +43,30 @@ const UpcomingGames = () => {
     function showGames(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log(chosenDate.current.value)
         let filterDate = new Date(chosenDate.current.value + " 00:00:00")
-        console.log(filterDate)
         setSelectedDate(filterDate)
     }
 
     const getAllLines = () => {
-        axios.get('https://api.the-odds-api.com/v3/odds', {
-            params: {
-                api_key: api_key,
-                sport: sport_key,
-                region: region,
-                mkt: market,
-            }
+        let promises = []
+        league_keys.map((sportkey)=>{
+            promises.push(axios.get('https://api.the-odds-api.com/v3/odds', {
+                params: {
+                    api_key: api_key,
+                    sport: sportkey,
+                    region: region,
+                    mkt: market,
+                }
+            }))
         })
-            .then(response => {
-                setGames(response.data.data)
-                // Check usage
-                console.log('Remaining requests', response.headers['x-requests-remaining'])
-                console.log('Used requests', response.headers['x-requests-used'])
 
+        Promise.all(promises).then(arrOfResults => {
+            let results = arrOfResults.map((response) => {
+                return response.data.data
             })
-            .catch(error => {
-                console.log('Error status', error.response.status)
-                console.log(error.response.data)
-            })
+            console.log(results.flat())
+            setGames(results.flat())
+        })
     }
 
     return (
@@ -87,7 +88,7 @@ const UpcomingGames = () => {
                                         <option value="NFL">NFL</option>
                                         <option value="NHL">NHL</option>
                                         <option value="NBA">NBA</option>
-                                        <option value="MLB">MLB</option>
+                                        {/* <option value="MLB">MLB</option> */}
                                     </Form.Select>
                                 </Col>
                                 <Col xs="2">
