@@ -41,10 +41,10 @@ function GetGames(props) {
     var bestOdds = [];
 
     useEffect(() => {
-        setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-        }, 1500)
+        // setLoading(true)
+        // setTimeout(() => {
+        //     setLoading(false)
+        // }, 1500)
     }, [])
 
     const mapGames = [] // [{game name, unitbet, ...}] game name, game time, map to values
@@ -135,11 +135,12 @@ function GetGames(props) {
                     </div>
                     :
                     <>
-                        <h1 className="text-center headingLine">NFL MONEYLINE ODDS</h1>
+                        {/* <h1 className="text-center headingLine">NFL MONEYLINE ODDS</h1> */}
+                        <br />
                         <ReactBootStrap.Table striped bordered hover responsive className="OddsTable">
                             <thead>
                                 <tr>
-                                    <td className="text-center NFLLogo"><img width="72" height="100" src={NFL} /></td>
+                                    {/* <td className="text-center NFLLogo"><img width="72" height="100" src={NFL} /></td> */}
                                     <td width="200" height="80"><img width="160" height="100" src={UNIBET} /></td>
                                     <td width="200" height="80"><img width="160" height="100" src={BarstoolSportsbook} /></td>
                                     <td width="200" height="80"><img width="160" height="100" src={DraftKings} /></td>
@@ -152,7 +153,7 @@ function GetGames(props) {
                                 {
                                     mapGames.map((game, i) => {
                                         return <tr key={game.id}>
-                                            <td className="text-center">{game.gameNames[0]} <br />{game.gameNames[1]} <br /><p className="text-danger">{game.gameTime}</p></td>
+                                            {/* <td className="text-center">{game.gameNames[0]} <br />{game.gameNames[1]} <br /><p className="text-danger">{game.gameTime}</p></td> */}
                                             <td className="text-center"><span className={game.oddsMap.unibet[0] != null && game.oddsMap.unibet[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[0]} / {game.oddsMap.unibet[2]}</span> <br /><span className={game.oddsMap.unibet[1] != null && game.oddsMap.unibet[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.unibet[1]} / {game.oddsMap.unibet[3]}</span></td>
                                             <td className="text-center"><span className={game.oddsMap.barstool[0] != null && game.oddsMap.barstool[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[0]} / {game.oddsMap.barstool[2]}</span> <br /><span className={game.oddsMap.barstool[1] != null && game.oddsMap.barstool[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.barstool[1]} / {game.oddsMap.barstool[3]}</span></td>
                                             <td className="text-center"><span className={game.oddsMap.draftkings[0] != null && game.oddsMap.draftkings[0].toString() === bestOdds[i][0][0].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[0]} / {game.oddsMap.draftkings[2]}</span> <br /><span className={game.oddsMap.draftkings[1] != null && game.oddsMap.draftkings[1].toString() === bestOdds[i][0][1].toString() ? 'text-strike' : null}>{game.oddsMap.draftkings[1]} / {game.oddsMap.draftkings[3]}</span></td>
