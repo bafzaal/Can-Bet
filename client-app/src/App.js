@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
 import BettingLines from "./components/BettingLines";
+import UpcomingGames from "./components/UpcomingGames";
 
 function App() {
   
@@ -61,6 +62,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home />}></Route>
         <Route exact path="/betting-lines" element={<BettingLines />}></Route>
+        <Route exact path="/upcoming/games" element={<UpcomingGames />}></Route>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
