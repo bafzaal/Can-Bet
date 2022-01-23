@@ -4,11 +4,15 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
 const cors = require('cors');
 const app = express();
 
-app.use(cors())
+var bets = require("./api/bets");
 
+
+app.use(cors())
+app.use(fileupload());
 // Configure ENV file and require conn.js
 dotenv.config({ path: "./config.env" });
 require("./db/conn");
@@ -171,3 +175,8 @@ app.post("/newPassword", async (req, res) => {
 app.listen(port, () => {
   console.log("Server Started");
 });
+
+
+app.use("/", bets);
+
+module.exports = app;
