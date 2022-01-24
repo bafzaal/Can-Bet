@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import Home from "./components/Home";
 import BettingLines from "./components/BettingLines";
 import UpcomingGames from "./components/UpcomingGames";
+import PlaceBets from "./components/PlaceBets";
 
 function App() {
   
@@ -66,9 +67,11 @@ function App() {
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
+        
          {isTokenValidated ? (
             <Route path="/profile/:id" element={<Profile />}>  
-            </Route>
+            </Route>, 
+            <Route path="/place-bets" element={<PlaceBets id={userId} />}></Route>
           ) : (
             <Route exact path="/3" element={<Login />}></Route>
           ) // test to see if non auth users can access /3 while auth can

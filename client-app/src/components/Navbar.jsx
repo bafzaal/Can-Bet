@@ -18,15 +18,27 @@ const Navbar = (props) => {
                             <li className="nav-item">
                                 <NavLink to="/" className="nav-link" href="#">Dashboard</NavLink> {/*Placeholder*/}
                             </li>
-                            {/* <li className="nav-item">
-                                <NavLink to="/betting-lines" className="nav-link" href="#">Betting Lines</NavLink>
-                            </li> */}
+            
                             <li className="nav-item">
                                 <NavLink to="/" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/upcoming/games" className="nav-link" href="#">Games</NavLink> {/*Placeholder*/}
                             </li>
+                            {props.isAuth ?     
+                             <>
+                              <li className="nav-item dropdown">
+                      
+                                <NavLink to="/" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page" href="#">Bets</NavLink>
+                                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  <li><a className="dropdown-item" href="/place-bets">Place Bets</a></li>
+                                </ul>
+                              </li>
+                              </>:
+                              <>
+                              </>
+                             }
+                            
                         </ul>
                         <a className="navbar-brand fw-bolder fs-4 mx-auto" href="/"><img width="136" height="38" src={logo} /></a>
                         {props.isAuth ?       
