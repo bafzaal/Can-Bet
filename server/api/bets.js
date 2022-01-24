@@ -112,4 +112,64 @@ async function AddToDB(results, id) {
   }
 }
 
+router.post("/api/place-bets-form", async (req, res) => {
+  let bets = req.body;
+  let size = bets.betContents.length;
+  let betType = "";
+  let betCollection = [];
+
+  let totalBetOdds = 1;
+  let betResult = "Win";
+
+  if (size > 1) {
+    betType = "Multiple";
+  } else if (size == 1) {
+    betType = bets.betContents[0].type;
+  }
+
+  for (let i = 0; i < size; i++) {
+    let individaulBet = bets.betContents[i];
+    if(individaulBet.result == "Loss"){
+      betResult = "Loss"
+    }
+    totalBetOdds=totalBetOdds*individaulBet.odds;
+
+    let betDetails = {
+      type: individaulBet.type,
+      sport: individaulBet.sport,
+      date: individaulBet.date.substring(2, individaulBet.date.length),
+      selection: individaulBet.selection,
+      odds: individaulBet.odds,
+      result: individaulBet.result,
+      homeTeam: individaulBet.home,
+      awayTeam: individaulBet.away,
+      homeSpread :"",
+      awaySpread: ""
+
+    };
+
+    if (individaulBet.type == "Spread") {
+      betDetails.homeSpread = individaulBet.homeSpread;
+      betDetails.awaySpread = individaulBet.awaySpread;
+    }
+    betCollection.push(betDetails);
+  }
+
+  let createBets = new Bets({
+    userId: bets.id,
+    size: size,
+    totalOdds: totalBetOdds,
+    stake: bets.stake,
+    result: betResult,
+    payout: bets.payout,
+    sportsbook: bets.sportsbook,
+    type: betType,
+    betContents: betCollection,
+  });
+
+  const created = await createBets.save();
+  console.log(created);
+  return res.status(200).json({ success: true });
+});
+
 module.exports = router;
