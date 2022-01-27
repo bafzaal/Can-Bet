@@ -69,9 +69,11 @@ function App() {
         <Route exact path="/logout" element={<Logout />}></Route>
         
          {isTokenValidated ? (
+           <>
             <Route path="/profile/:id" element={<Profile />}>  
-            </Route>, 
+            </Route>
             <Route path="/place-bets" element={<PlaceBets id={userId} />}></Route>
+            </>
           ) : (
             <Route exact path="/3" element={<Login />}></Route>
           ) // test to see if non auth users can access /3 while auth can
