@@ -3,10 +3,11 @@ const csv = require("csv-parser");
 const { Readable } = require("stream");
 const authenticate = require("../authentication/authenticate");
 const Bets = require("../models/betsSchema");
+const stats = require("../db/stats");
 
 var router = express.Router();
 
-router.post("/api/place-bets-file", (req, res) => {
+router.post("/api/place-bets-file", async (req, res) => {
   let id = req.body.id;
 
   if (!req.files) {
@@ -25,7 +26,8 @@ router.post("/api/place-bets-file", (req, res) => {
     .on("end", () => {
       AddToDB(results, id);
     });
-
+  
+  await stats.updateStats(id);
   return res.status(200).json({ success: true });
 });
 
@@ -67,6 +69,7 @@ async function AddToDB(results, id) {
       });
 
       const created = await createBets.save();
+      await stats.updateStats(id);
       console.log(created);
     } else if (bet.TYPE == "Parlay" || parlayBetCount >= 0) {
       if (parlayBetCount == 0) {
@@ -106,6 +109,7 @@ async function AddToDB(results, id) {
 
           const created = await createBets.save();
           console.log(created);
+          await stats.updateStats(id);
         }
       }
     }
@@ -169,6 +173,7 @@ router.post("/api/place-bets-form", async (req, res) => {
 
   const created = await createBets.save();
   console.log(created);
+  await stats.updateStats(bets.id);
   return res.status(200).json({ success: true });
 });
 
