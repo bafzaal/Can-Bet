@@ -4,16 +4,21 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
 const cors = require('cors');
 const app = express();
 
-app.use(cors())
+var bets = require("./api/bets");
 
+
+app.use(cors())
+app.use(fileupload());
 // Configure ENV file and require conn.js
 dotenv.config({ path: "./config.env" });
 require("./db/conn");
 const port = process.env.PORT;
 
+const stats = require("./db/stats");
 const Users = require("./models/userSchema");
 const authenticate = require("./authentication/authenticate");
 
@@ -69,6 +74,7 @@ app.post("/login", async (req, res) => {
           expires: new Date(Date.now() + 43200000), // 43200000 ms = 12 hours
           httpOnly: true,
         });
+        await stats.updateStats(user.id);
         res.status(200).send("Log In Successful");
       } else {
         res.status(400).send("Incorrect Password");
@@ -171,3 +177,8 @@ app.post("/newPassword", async (req, res) => {
 app.listen(port, () => {
   console.log("Server Started");
 });
+
+
+app.use("/", bets);
+
+module.exports = app;
