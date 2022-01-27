@@ -25,6 +25,7 @@ router.post("/api/place-bets-file", async (req, res) => {
     .on("data", (data) => results.push(data))
     .on("end", () => {
       AddToDB(results, id);
+
     });
   
   await stats.updateStats(id);
@@ -43,63 +44,63 @@ async function AddToDB(results, id) {
       betCollection = [];
       const betDetails = {
         type: bet.TYPE,
-        sport: bet.Sport,
-        date: bet.Date,
-        selection: bet.Selection,
-        odds: bet.Odds,
-        result: bet.Result,
-        homeTeam: bet.Home,
-        awayTeam: bet.Away,
-        homeSpread: bet.HomeSpread,
-        awaySpread: bet.AwaySpread,
+        sport: bet.SPORT,
+        date: bet.DATE,
+        selection: bet.SELECTION,
+        odds: bet.ODDS,
+        result: bet.RESULT,
+        homeTeam: bet.HOME,
+        awayTeam: bet.AWAY,
+        homeSpread: bet.HOMESPREAD,
+        awaySpread: bet.AWAYSPREAD,
       };
 
       betCollection.push(betDetails);
 
       createBets = new Bets({
         userId: id,
-        size: bet.Size,
-        totalOdds: bet.Odds,
-        stake: bet.Stake,
-        result: bet.Result,
-        payout: bet.Payout,
-        sportsbook: bet.Sportsbook,
+        size: bet.SIZE,
+        totalOdds: bet.ODDS,
+        stake: bet.STAKE,
+        result: bet.RESULT,
+        payout: bet.PAYOUT,
+        sportsbook: bet.SPORTSBOOK,
         type: bet.TYPE,
         betContents: betCollection,
       });
-
+      console.log(createBets)
       const created = await createBets.save();
       await stats.updateStats(id);
       console.log(created);
     } else if (bet.TYPE == "Parlay" || parlayBetCount >= 0) {
       if (parlayBetCount == 0) {
-        parlayBetCount = bet.Size;
+        parlayBetCount = bet.SIZE.trim();
         betCollection = [];
 
         createBets = new Bets({
           userId: id,
-          size: bet.Size,
-          totalOdds: bet.Odds,
-          stake: bet.Stake,
-          result: bet.Result,
-          payout: bet.Payout,
-          sportsbook: bet.Sportsbook,
-          type: bet.TYPE,
+          size: bet.SIZE.trim(),
+          totalOdds: bet.ODDS.trim(),
+          stake: bet.STAKE.trim(),
+          result: bet.RESULT.trim(),
+          payout: bet.PAYOUT.trim(),
+          sportsbook: bet.SPORTSBOOK.trim(),
+          type: bet.TYPE.trim(),
         });
       } else {
         --parlayBetCount;
 
         const betDetails = {
-          type: bet.TYPE,
-          sport: bet.Sport,
-          date: bet.Date,
-          selection: bet.Selection,
-          odds: bet.Odds,
-          result: bet.Result,
-          homeTeam: bet.Home,
-          awayTeam: bet.Away,
-          homeSpread: bet.HomeSpread,
-          awaySpread: bet.AwaySpread,
+          type: bet.TYPE.trim(),
+          sport: bet.SPORT.trim(),
+          date: bet.DATE.trim(),
+          selection: bet.SELECTION.trim(),
+          odds: bet.ODDS.trim(),
+          result: bet.RESULT.trim(),
+          homeTeam: bet.HOME.trim(),
+          awayTeam: bet.AWAY.trim(),
+          homeSpread: bet.HOMESPREAD.trim(),
+          awaySpread: bet.AWAYSPREAD.trim(),
         };
         betCollection.push(betDetails);
 
@@ -110,6 +111,7 @@ async function AddToDB(results, id) {
           const created = await createBets.save();
           console.log(created);
           await stats.updateStats(id);
+          console.log(createBets)
         }
       }
     }

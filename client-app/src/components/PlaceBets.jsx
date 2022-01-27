@@ -41,7 +41,7 @@ const PlaceBets = (props) => {
    [] 
   );
 
-  const [formDetails, setFormDetauls] = useState({
+  const [formDetails, setFormDetails] = useState({
     stake: "",
     payout: "",
     sportsBook: "",
@@ -75,7 +75,8 @@ const PlaceBets = (props) => {
   };
 
   const handleFormUpdate = (form) => {
-   
+    if(form.result=="Loss")
+      setFormDetails({ ...formDetails, ['payout']: 0 });
     betFormsData[form.id]=form;
    
   };
@@ -83,7 +84,7 @@ const PlaceBets = (props) => {
   const handleOnChange = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
-    setFormDetauls({ ...formDetails, [name]: value });
+    setFormDetails({ ...formDetails, [name]: value });
   };
 
   const SubmitBets = () => {

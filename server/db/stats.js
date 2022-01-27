@@ -69,7 +69,7 @@ function getSpecifics(bets)
     let ROI = 0;
     bets.forEach(function(bet) 
     {
-        profitLoss += (parseFloat(bet.payout));
+        profitLoss += (parseFloat(bet.payout))-bet.stake;
         sumOdds += bet.totalOdds;   
         amountBet += bet.stake;
         if(bet.result == 'Win') wins++;
@@ -79,7 +79,7 @@ function getSpecifics(bets)
     });
     profitLoss = profitLoss - amountBet;
     ROI = (profitLoss / amountBet) * 100;
-    ROI = ROI.toFixed(0).toString() + '%';
+    ROI = ROI.toFixed(0).toString(  ) + '%';
     if(profitLoss >= 0)
         profitLoss = '+ $' + profitLoss.toFixed(2).toString();
     else
