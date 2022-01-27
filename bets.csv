@@ -1,0 +1,11 @@
+TYPE,SIZE,DATE,SPORT,HOME,AWAY,HOMESPREAD,AWAYSPREAD,SELECTION,ODDS,STAKE,RESULT,PAYOUT,SPORTSBOOK
+Moneyline,1,20-Sep-20,NBA,Nuggets,Lakers,,,Lakers,1.33,2,Win,2.66,DraftKings
+Spread,1,21-Sep-20,NFL,Eagles ,Rams,-1.5,1.5,Eagles,1.95,1.92,Loss,0,FOX Bet
+Parlay,3,20-Sep-20,Multiple,,,,,,2.44,2.05,Win,5,UniBet
+Moneyline,,20-Sep-20,NFL,Bills,Dolphins,,,Bills,1.4,,Win,0,UniBet
+Moneyline,,20-Sep-20,NFL,Lions,Packers,,,Packers,1.33,,Win,0,UniBet
+Moneyline,,20-Sep-20,NBA,Suns,Spurs,,,Suns,1.31,,Win,0,UniBet
+Moneyline,1,21-Sep-20,NBA,Nuggets,Lakers,,,Lakers,1.33,2,Win,2.66,DraftKings
+Parlay,2,23-Sep-20,Multiple,,,,,,2.73,2.05,Loss,5.6,UniBet
+Spread,,21-Sep-20,NFL,Eagles ,Rams,-1.5,1.5,Eagles,1.95,,Loss,0,FOX Bet
+Moneyline,,20-Sep-20,NFL,Bills,Dolphins,,,Bills,1.4,,Win,0,UniBet
