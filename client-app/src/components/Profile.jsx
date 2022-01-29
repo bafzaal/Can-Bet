@@ -1,140 +1,258 @@
-import { React, useEffect, useState, useCallback } from 'react';
-import { resetPassword, getUser, deleteUser} from "../services/userService"
+import React, { useEffect, useState, useRef } from "react";
+import { Row, Form, Container, Col, Button, Select } from "react-bootstrap";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
 const Profile = (props) => {
-  let navigate = useNavigate();
   const { id } = useParams();
-  const [changePassword, setChangePassword] = useState({
-    password: "",
-    newPassword: "",
-  });
+  const chosenBetFilter = useRef();
+  const [selectedBetFilter, setSelectedBetFilter] = useState("overall");
 
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-  });
-  const handleOnPasswordChange = (event) => {
-    const { name, value } = event.target;
-    setChangePassword({ ...changePassword, [name]: value });
-  };
-  const handleOnChange = (event) => {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
-  };
-  const newPasswordUser = async (e) => {
-    e.preventDefault();
-    const {password, newPassword } = changePassword;
-    const {username, email} = user;
-    if (window.confirm('Are you sure you wish to update this user?')){
-    var result = await resetPassword(password, newPassword, username, email, id)
-    if(result === 'success'){
-      //navigate('/', { replace: true })
-      window.location.reload();
-    }
-  }
-  };
-  const retrieveUser = useCallback(async () => {
-    var result = await getUser(id);
-    if (result !== null) {
-  
-      return result;
-    }
-  });
-  const removeUser = async(e) => {
-    e.preventDefault();
-    if (window.confirm('Are you sure you wish to delete this item?')){
-      var result = await deleteUser(id, changePassword.password)
-      if(result === 'success'){
-        navigate('/login', { replace: true })
-        window.location.reload();
-      }
-    }
-  }
+  const [betStats, setBetStats] = useState({});
   useEffect(() => {
-  
-      retrieveUser().then(result =>{
-        setUser({username: result.username, email: result.email})
-      });  
-    
-  }, []);
-  return(
-        <div>
-          
-        <div className="w-50 container shadow my-5">
-          <div className = "w-100 text-center">
-            <div className="p-5 d-inline-block">
-              <h1 className="display-6 fw-bolder mb-5">Edit Profile</h1>
-              <form onSubmit={newPasswordUser}>
-              <div className="mb-3">
-                  <label htmlFor="exampleInputUsername" className="form-label">
+    getBetStats();
+  }, [selectedBetFilter]);
 
-                    Username
-                  </label>
-                  <input
-                    type="username"
-                    className="form-control"
-                    id="exampleInputName"
-                    name="username"
-                    aria-describedby="usernameHelp"
-                    placeholder = {user.username}
-                    onChange={handleOnChange}
-                    value={user.username}
-                  />
+  const showBetStats = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedBetFilter(chosenBetFilter.current.value);
+  };
+
+  const getBetStats = async () => {
+    let url = "http://localhost:3001/api/display-stats";
+    await axios
+      .get(url, {
+        params: {
+          id: id,
+          filter: selectedBetFilter,
+        },
+      })
+      .then(function (response) {
+        if (response.data.success == true) {
+          let data = response.data.result;
+
+          let winRate = (data.winCount / data.totalBets) * 100;
+          data.winRate = parseFloat(winRate).toFixed(2);
+
+          let profitLoss = parseFloat(data.profitLoss.split("$")[1]);
+          if (data.profitLoss.includes("-")) profitLoss = profitLoss * -1;
+          data.profitLoss = profitLoss.toFixed(2);
+
+          let roi = parseFloat(data.ROI.split("%")[0]);
+          data.ROI = roi;
+
+          let averageOdds = parseFloat(data.averageOdds).toFixed(2);
+          data.averageOdds = averageOdds
+  
+          setBetStats(data);
+
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  return (
+    <>
+      <Container>
+        <Row>
+          <h1 className="text-center headingLine">Profile </h1>
+        </Row>
+        <Row className="mrgn-btm-3p">
+          <Form>
+            <Row className="d-flex justify-content-center">
+              <Col xs="3">
+                <Form.Select ref={chosenBetFilter}>
+                  <option value="overall">Overall</option>
+                  <option value="moneyline">Moneyline</option>
+                  <option value="spread">Spread</option>
+                  <option value="parlay">Parlay</option>
+                  <option value="NFL">NFL</option>
+                  <option value="NHL">NHL</option>
+                  <option value="NBA">NBA</option>
+                </Form.Select>
+              </Col>
+              <Col xs="1" className="d-flex justify-content-center">
+                <Button variant="danger" onClick={showBetStats}>
+                  Filter
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Row>
+
+        <Row>
+          <div className="pb-5 pt-5 pe-0 ps-0">
+            <div className="container-fluid">
+              <div className="header-body">
+                <div className="row d-flex justify-content-center">
+                  <div className="col-xl-4 col-lg-10">
+                    <div className="card card-stats mb-4 mb-xl-0">
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-8">
+                            <h5 className="card-title text-uppercase text-muted mb-0">
+                              Total Bets
+                            </h5>
+                            <span className="h2 font-weight-bold mb-0">
+                              {betStats.totalBets}
+                            </span>
+                          </div>
+                          <div className="col-4">
+                            <div className="icon icon-shape bg-danger h-75 d-flex justify-content-center align-items-center text-white rounded-circle shadow">
+                              <i
+                                className="fa fa-pie-chart"
+                                style={{ fontSize: "1.5rem" }}
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-3 text-muted text-sm">
+                          {betStats.winRate >= 50 ? (
+                            <>
+                              <span className="text-success me-2">
+                                <i className="fa fa-arrow-up"></i>{" "}
+                                {betStats.winRate}%
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-danger me-2">
+                              <i className="fa fa-arrow-down"></i>{" "}
+                              {betStats.winRate}%
+                            </span>
+                          )}
+                          <span className="text-nowrap">Win Rate</span>
+                        </p>
+                        <div className="align-items-center d-flex my-1 row">
+                          <div className="progress w-75 p-0">
+                            <div
+                              className="progress-bar"
+                              style={{ width: `${betStats.winRate}%` }}
+                              role="progressbar"
+                            ></div>
+                          </div>
+                          <span className="text-nowrap w-25">
+                            {betStats.winCount}/{betStats.totalBets} won
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-xl-4 col-lg-10">
+                    <div className="card card-stats mb-4 mb-xl-0">
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-8">
+                            <h5 className="card-title text-uppercase text-muted mb-0">
+                              Amount Bet
+                            </h5>
+                            <span className="h2 font-weight-bold mb-0">
+                              ${betStats.amountBet}
+                            </span>
+                          </div>
+                          <div className="col-4">
+                            <div className="icon icon-shape bg-success h-75 d-flex justify-content-center align-items-center text-white rounded-circle shadow">
+                              <i
+                                className="fa fa-usd"
+                                style={{ fontSize: "1.5rem" }}
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-3 text-muted text-sm">
+                          {betStats.profitLoss >= 0 ? (
+                            <>
+                              <span className="text-success me-2">
+                                <i className="fa fa-arrow-up"></i>$
+                                {betStats.profitLoss}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-danger me-2">
+                              <i className="fa fa-arrow-down"></i>$
+                              {betStats.profitLoss}
+                            </span>
+                          )}
+                          <span className="text-nowrap">Total Profit</span>
+                        </p>
+                        <div className="align-items-center d-flex my-1 row">
+                          <div className="progress w-75 p-0">
+                            {betStats.ROI >= 0 ? (
+                              <div
+                                className="progress-bar bg-success"
+                                style={{ width: `${betStats.ROI}%` }}
+                                role="progressbar"
+                              ></div>
+                            ) : (
+                              <div
+                                className="progress-bar bg-danger"
+                                style={{ width: `${betStats.ROI*-1}%` }}
+                                role="progressbar"
+                              ></div>
+                            )}
+                          </div>
+                          <span className="text-nowrap w-25">
+                            {betStats.ROI}% ROI
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-xl-4 col-lg-10">
+                    <div className="card card-stats mb-4 mb-xl-0 h-100">
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col">
+                            <h5 className="card-title text-uppercase text-muted mb-0">
+                              Average Odds
+                            </h5>
+                            <span className="h2 font-weight-bold mb-0">
+                            {betStats.averageOdds}
+                            </span>
+                          </div>
+                          <div className="col-4">
+                            <div className="icon icon-shape bg-primary h-75 d-flex justify-content-center align-items-center text-white rounded-circle shadow">
+                              <i
+                                className="fa fa-database"
+                                style={{ fontSize: "1.5rem" }}
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-3 text-muted text-sm">
+                          <span className="text-nowrap w-25">
+                            {betStats.pendingCount}/{betStats.totalBets} pending
+                          </span>
+                        </p>
+                        <div className="align-items-center d-flex mt-3 my-1 row">
+                          <div className="progress w-75 p-0">
+                            <div
+                              className="progress-bar"
+                              style={{ width: `${parseInt(betStats.pendingCount/betStats.totalBets*100)}%` }}
+                              role="progressbar"
+                            ></div>
+                          </div>
+                          <span className="text-nowrap w-25">
+                            {/* {betStats.pendingCount}/{betStats.totalBets} pending */}
+                            pending %
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputEmail" className="form-label">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="exampleInputEmail1"
-                    name="email"
-                    aria-describedby="emailHelp"
-                    placeholder = {user.email}
-                    onChange={handleOnChange}
-                    value={user.email}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputPassword1" className="form-label">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    name="password"
-                    id="exampleInputPassword1"
-                    onChange={handleOnPasswordChange}
-                    value={changePassword.password}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputNewPassword" className="form-label">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    name="newPassword"
-                    id="exampleInputNewPassword"
-                    onChange={handleOnPasswordChange}
-                    value={changePassword.newPassword}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger" disabled={changePassword.password.length<1}>
-                  Submit
-                </button>
-                <button className="btn btn-danger btn-sm rounded-0" onClick={removeUser} disabled={changePassword.password.length<1} type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i className="fa fa-trash"></i></button>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    );
-}
+        </Row>
+      </Container>
+    </>
+  );
+};
 
 export default Profile;

@@ -48,6 +48,10 @@ const Navbar = (props) => {
                         <i className="fa fa-user me-2"></i>Profile
                         </Link>
 
+                        <Link className="btn btn-outline-danger ms-2 px-4 rounded-pill" to={`account-settings/${props.id}`}>
+                          <i className="bi bi-gear-fill me-2"></i>Settings
+                        </Link>
+
                         <NavLink to="/logout" className="btn btn-outline-danger ms-2 px-4 rounded-pill">
                         <i className="fa fa-user-plus me-2"></i>Logout</NavLink>
                         

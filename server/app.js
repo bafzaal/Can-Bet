@@ -8,7 +8,8 @@ const fileupload = require("express-fileupload");
 const cors = require('cors');
 const app = express();
 
-var bets = require("./api/bets");
+let bets = require("./api/bets");
+let statsDisplay = require("./api/stats-display");
 
 
 app.use(cors())
@@ -179,6 +180,6 @@ app.listen(port, () => {
 });
 
 
-app.use("/", bets);
+app.use("/", bets, statsDisplay);
 
 module.exports = app;

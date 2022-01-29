@@ -6,12 +6,12 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
 import Register from "./components/Register";
-import Profile from "./components/Profile";
+import AccountSettings from "./components/AccountSettings";
 import Home from "./components/Home";
 import BettingLines from "./components/BettingLines";
 import UpcomingGames from "./components/UpcomingGames";
 import PlaceBets from "./components/PlaceBets";
-
+import Profile from "./components/Profile";
 function App() {
   
   const [isTokenValidated, setIsTokenValidated] = useState(false);
@@ -70,7 +70,9 @@ function App() {
         
          {isTokenValidated ? (
            <>
-            <Route path="/profile/:id" element={<Profile />}>  
+            <Route path="/profile/:id" element={<Profile id={userId}/>}>  
+            </Route>
+            <Route path="/account-settings/:id" element={<AccountSettings />}>  
             </Route>
             <Route path="/place-bets" element={<PlaceBets id={userId} />}></Route>
             </>
