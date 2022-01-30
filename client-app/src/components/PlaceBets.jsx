@@ -115,24 +115,24 @@ const PlaceBets = (props) => {
     let updatedForm = betFormsData.filter((e) => {
       return e.id != null;
     });
-    console.log(updatedForm);
-    // let postData = {
-    //   id: props.id,
-    //   stake: formDetails.stake,
-    //   payout: formDetails.payout,
-    //   sportsbook: formDetails.sportsBook,
-    //   betContents: updatedForm,
-    // };
-    // let url = "http://localhost:3001/api/place-bets-form";
-    // axios
-    //   .post(url, postData, {})
-    //   .then((response) => {
-    //     console.log(response);
-    //     window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+
+    let postData = {
+      id: props.id,
+      stake: formDetails.stake,
+      payout: formDetails.payout,
+      sportsbook: formDetails.sportsBook,
+      betContents: updatedForm,
+    };
+    let url = "http://localhost:3001/api/place-bets-form";
+    axios
+      .post(url, postData, {})
+      .then((response) => {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <>
