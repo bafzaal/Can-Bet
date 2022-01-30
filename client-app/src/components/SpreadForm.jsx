@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 const SpreadForm = (props) => {
-
-
   const [form, setForm] = useState({
-    id:props.number,
-    type:props.type,
+    id: props.number,
+    type: props.type,
     date: "",
     sport: "",
     home: "",
@@ -22,19 +20,30 @@ const SpreadForm = (props) => {
   }, [form]);
 
   const handleOnChange = (event) => {
-
     event.preventDefault();
+    event.stopPropagation();
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
-
+  };
+  const deleteForm = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    props.onDeleteForm(props.number);
   };
 
   return (
     <>
-      <div className="w-25 p-4 mx-auto">
-        Spread {props.number}
-        <h1>{props.name}</h1>
-        <form>
+      <div className="w-25 p-4 mx-5">
+        {/* Spread {props.number} */}
+        Spread
+        <form className="d-flex flex-column">
+          <button
+            type="button"
+            onClick={deleteForm}
+            className="btn-close align-self-end bg-danger"
+            aria-label="Close"
+          ></button>
+
           <div className="mb-3">
             <label htmlFor="exampleInputDate" className="form-label">
               Date
@@ -156,7 +165,6 @@ const SpreadForm = (props) => {
               <option value="Loss">Loss</option>
             </select>
           </div>
-
         </form>
       </div>
     </>
