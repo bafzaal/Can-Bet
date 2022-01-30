@@ -34,7 +34,7 @@ const MoneyLineForm = (props) => {
       <div className="w-25 p-4 mx-5">
         {/* Money Line {props.number} */}
         Money Line
-        <form className="d-flex flex-column">
+        <div className="d-flex flex-column">
           <button
             type="button"
             onClick={deleteForm}
@@ -53,6 +53,7 @@ const MoneyLineForm = (props) => {
               name="date"
               onChange={handleOnChange}
               value={form.date}
+              required
             />
           </div>
           <div className="mb-3">
@@ -66,6 +67,7 @@ const MoneyLineForm = (props) => {
               name="sport"
               onChange={handleOnChange}
               value={form.sport}
+              required
             />
           </div>
           <div className="mb-3">
@@ -79,6 +81,7 @@ const MoneyLineForm = (props) => {
               name="home"
               onChange={handleOnChange}
               value={form.home}
+              required
             />
           </div>
           <div className="mb-3">
@@ -92,6 +95,7 @@ const MoneyLineForm = (props) => {
               name="away"
               onChange={handleOnChange}
               value={form.away}
+              required
             />
           </div>
           <div className="mb-3">
@@ -105,6 +109,7 @@ const MoneyLineForm = (props) => {
               name="selection"
               onChange={handleOnChange}
               value={form.selection}
+              required
             />
           </div>
           <div className="mb-3">
@@ -118,6 +123,7 @@ const MoneyLineForm = (props) => {
               name="odds"
               onChange={handleOnChange}
               value={form.odds}
+              required
             />
           </div>
           <div className="mb-3">
@@ -131,13 +137,14 @@ const MoneyLineForm = (props) => {
               name="result"
               id="exampleInputResult"
               value={form.result}
+              required
             >
               <option defaultValue></option>
               <option value="Win">Win</option>
               <option value="Loss">Loss</option>
             </select>
           </div>
-        </form>
+        </div>
       </div>
     </>
   );

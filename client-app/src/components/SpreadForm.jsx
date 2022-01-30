@@ -36,7 +36,7 @@ const SpreadForm = (props) => {
       <div className="w-25 p-4 mx-5">
         {/* Spread {props.number} */}
         Spread
-        <form className="d-flex flex-column">
+        <div className="d-flex flex-column">
           <button
             type="button"
             onClick={deleteForm}
@@ -55,6 +55,7 @@ const SpreadForm = (props) => {
               name="date"
               onChange={handleOnChange}
               value={form.date}
+              required
             />
           </div>
           <div className="mb-3">
@@ -68,6 +69,7 @@ const SpreadForm = (props) => {
               name="sport"
               onChange={handleOnChange}
               value={form.sport}
+              required
             />
           </div>
           <div className="mb-3">
@@ -81,6 +83,7 @@ const SpreadForm = (props) => {
               name="home"
               onChange={handleOnChange}
               value={form.home}
+              required
             />
           </div>
           <div className="mb-3">
@@ -94,6 +97,7 @@ const SpreadForm = (props) => {
               name="homeSpread"
               onChange={handleOnChange}
               value={form.homeSpread}
+              required
             />
           </div>
           <div className="mb-3">
@@ -107,6 +111,7 @@ const SpreadForm = (props) => {
               name="away"
               onChange={handleOnChange}
               value={form.away}
+              required
             />
           </div>
           <div className="mb-3">
@@ -120,6 +125,7 @@ const SpreadForm = (props) => {
               name="awaySpread"
               onChange={handleOnChange}
               value={form.awaySpread}
+              required
             />
           </div>
           <div className="mb-3">
@@ -133,6 +139,7 @@ const SpreadForm = (props) => {
               name="selection"
               onChange={handleOnChange}
               value={form.selection}
+              required
             />
           </div>
           <div className="mb-3">
@@ -146,6 +153,7 @@ const SpreadForm = (props) => {
               name="odds"
               onChange={handleOnChange}
               value={form.odds}
+              required
             />
           </div>
           <div className="mb-3">
@@ -159,13 +167,14 @@ const SpreadForm = (props) => {
               name="result"
               id="exampleInputResult"
               value={form.result}
+              required
             >
               <option defaultValue></option>
               <option value="Win">Win</option>
               <option value="Loss">Loss</option>
             </select>
           </div>
-        </form>
+        </div>
       </div>
     </>
   );

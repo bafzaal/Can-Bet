@@ -115,24 +115,24 @@ const PlaceBets = (props) => {
     let updatedForm = betFormsData.filter((e) => {
       return e.id != null;
     });
-
-    let postData = {
-      id: props.id,
-      stake: formDetails.stake,
-      payout: formDetails.payout,
-      sportsbook: formDetails.sportsBook,
-      betContents: updatedForm,
-    };
-    let url = "http://localhost:3001/api/place-bets-form";
-    axios
-      .post(url, postData, {})
-      .then((response) => {
-        console.log(response);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log(updatedForm);
+    // let postData = {
+    //   id: props.id,
+    //   stake: formDetails.stake,
+    //   payout: formDetails.payout,
+    //   sportsbook: formDetails.sportsBook,
+    //   betContents: updatedForm,
+    // };
+    // let url = "http://localhost:3001/api/place-bets-form";
+    // axios
+    //   .post(url, postData, {})
+    //   .then((response) => {
+    //     console.log(response);
+    //     window.location.reload();
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
   return (
     <>
@@ -157,6 +157,9 @@ const PlaceBets = (props) => {
         </button>
       </p>
 
+
+
+      <form onSubmit={SubmitBets}>
       {betFormDetails ? (
         <div className="d-flex px-5 flex-row">
           <div className="mb-3">
@@ -170,6 +173,7 @@ const PlaceBets = (props) => {
               name="stake"
               onChange={handleOnChange}
               value={formDetails.stake}
+              required
             />
           </div>
           <div className="mb-3">
@@ -183,6 +187,7 @@ const PlaceBets = (props) => {
               name="payout"
               onChange={handleOnChange}
               value={formDetails.payout}
+              required
             />
           </div>
           <div className="mb-3">
@@ -196,32 +201,31 @@ const PlaceBets = (props) => {
               name="sportsBook"
               onChange={handleOnChange}
               value={formDetails.sportsBook}
+              required
             />
           </div>
         </div>
       ) : (
         <></>
       )}
-
-      <div className="d-flex flex-row flex-wrap" id="children-pane">
-        {betForms.map((item) => {
-          return item.form;
-        })}
-      </div>
-
-      {betFormDetails ? (
-        <div className="w-50">
-          <button
-            type="submit"
-            className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger"
-            onClick={SubmitBets}
-          >
-            Submit
-          </button>
+        <div className="d-flex flex-row flex-wrap">
+          {betForms.map((item) => {
+            return item.form;
+          })}
         </div>
-      ) : (
-        <></>
-      )}
+        {betFormDetails ? (
+          <div className="w-50">
+            <button
+              type="submit"
+              className="btn w-100 mt-4 mb-3 rounded-pill btn-outline-danger"
+            >
+              Submit
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
+      </form>
     </>
   );
 };
