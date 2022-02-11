@@ -8,8 +8,20 @@ const gameSchema = new mongoose.Schema({
         required: true
     },
     time: {
-        type: Date,
-        required: false
+        type: String,
+        required: true
+    },
+    time_summary: {
+        type: String,
+        required: true
+    },
+    day_string: {
+        type: String,
+        required: true
+    },
+    league: {
+        type: String,
+        required: true
     },
     home_team: {
         type: String,
