@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express();
 
 let bets = require("./api/bets");
-let statsDisplay = require("./api/stats-display");
+let betDetails = require("./api/bet-details");
 
 
 app.use(cors())
@@ -180,6 +180,6 @@ app.listen(port, () => {
 });
 
 
-app.use("/", bets, statsDisplay);
+app.use("/", bets, betDetails);
 
 module.exports = app;

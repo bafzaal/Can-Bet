@@ -1,0 +1,73 @@
+.betHistory {
+  .wrapper{
+    border: 1px solid rgba(0,0,0,.125);
+  }
+  .tile {
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 2px 3px -1px rgba(151, 171, 187, 0.7);
+    float: left;
+    transform-style: preserve-3d;
+    margin: 10px 5px;
+  }
+
+  .header {
+    border-bottom: 1px solid #ebeff2;
+    padding: 19px 0;
+    text-align: center;
+    color: #59687f;
+    font-size: 20px;
+    position: relative;
+  }
+
+  .details {
+
+    padding: 20px 6%;
+    margin: 10px 20px;
+    .matchup{
+      color: #59687f;
+      font-weight:900;
+    }
+    .matchup, .date{
+      float: left;
+      width: 50%;
+      text-align: center;
+      position: relative;
+    }
+    .details-container{
+      border-radius: 5px;
+      font-size: 16px;
+      color: #5aadef;
+      font-weight: 600;
+      overflow: auto;
+      flex-direction: column;
+      display: flex;
+      border: 1px solid #ebeff2;
+
+    }
+  }
+  .details strong,
+  .stats strong {
+    display: block;
+    color: #adb8c2;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .stats {
+    border-top: 1px solid #ebeff2;
+    background: #f7f8fa;
+    overflow: auto;
+    padding: 15px 0;
+    font-size: 16px;
+    color: #59687f;
+    font-weight: 600;
+    border-radius: 0 0 5px 5px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .stats div {
+    text-align: center;
+  }
+
+}

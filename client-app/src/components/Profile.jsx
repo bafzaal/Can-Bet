@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Row, Form, Container, Col, Button, Select } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import BettingHistory from "./BettingHistory";
 
 const Profile = (props) => {
   const { id } = useParams();
@@ -9,6 +10,7 @@ const Profile = (props) => {
   const [selectedBetFilter, setSelectedBetFilter] = useState("overall");
 
   const [betStats, setBetStats] = useState({});
+  
   useEffect(() => {
     getBetStats();
   }, [selectedBetFilter]);
@@ -250,6 +252,7 @@ const Profile = (props) => {
             </div>
           </div>
         </Row>
+        <BettingHistory></BettingHistory>
       </Container>
     </>
   );
