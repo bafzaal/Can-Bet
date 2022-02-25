@@ -60,7 +60,12 @@ const Profile = (props) => {
     <>
       <Container>
         <Row>
-          <h1 className="text-center headingLine">Profile </h1>
+          <h1 className="text-center headingLine">Profile</h1>
+          <h5 className="text-center">{props.email}</h5>
+        </Row>
+        <Row>
+          <h5 className="text-center headingLine">Stats</h5>
+     
         </Row>
         <Row className="mrgn-btm-3p">
           <Form>

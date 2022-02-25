@@ -71,11 +71,6 @@ const betsSchema = new mongoose.Schema({
 });
 
 
-// betsSchema.post('save', async function(){
-//   const stats = require('../db/stats');
-//   await stats.updateStats();
-// });
-class Bet {}
 
 // Create the model
 const Bets = new mongoose.model("BETS", betsSchema);

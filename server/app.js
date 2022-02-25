@@ -97,10 +97,10 @@ app.get("/logout", async (req, res) => {
 
 // authentcation
 app.get("/authentication", async (req, res) => {
-  var id = await authenticate(req, res)
-  if(id != null){
+  let data = await authenticate(req, res)
+  if(data.id != null){
   
-    res.status(200).json({result:id})
+    res.status(200).json({id:data.id, email:data.email})
   }else{
     res.status(401).json({result:null})
   }

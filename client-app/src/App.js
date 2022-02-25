@@ -17,10 +17,11 @@ function App() {
   const [isTokenValidated, setIsTokenValidated] = useState(false);
 
   const [userId, setUserId] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const isLoggedIn = useCallback(async () => {
 
-    var result ={auth:false, id:'' }
+    var result ={auth:false, id:'', email:'' }
     try {
       const req = await fetch("/authentication", {
         method: "GET",
@@ -35,9 +36,11 @@ function App() {
           return response.json();
         })
         .then((response) => {
-          const data = response["result"];
-          if (data != null) {
-            result.id = data
+          const id = response["id"];
+          const email = response["email"];
+          if (id != null) {
+            result.id = id
+            result.email = email
           }
         });
     } catch (error) {
@@ -52,7 +55,7 @@ function App() {
     isLoggedIn().then(result =>{
       setIsTokenValidated(result.auth);
       setUserId(result.id);
-   
+      setUserEmail(result.email);
     });         
   
   }, []);
@@ -70,7 +73,7 @@ function App() {
         
          {isTokenValidated ? (
            <>
-            <Route path="/profile/:id" element={<Profile id={userId}/>}>  
+            <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}>  
             </Route>
             <Route path="/account-settings/:id" element={<AccountSettings />}>  
             </Route>

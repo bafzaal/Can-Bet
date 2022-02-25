@@ -12,7 +12,7 @@ const authenticate = async (req, res) => {
     const userId = id["_id"]
     const user = await Users.findById(userId).exec();
     if (user) {
-      return userId;
+      return {"id":userId, "email":user.email};
     }
   
   }

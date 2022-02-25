@@ -50,7 +50,7 @@ const BettingHistory = () => {
   return (
     <>
       <Row>
-        <h1 className="text-center headingLine">Betting History</h1>
+        <h5 className="text-center headingLine">Betting History</h5>
       </Row>
 
       <Row className="mrgn-btm-3p">
@@ -91,9 +91,9 @@ const BettingHistory = () => {
                         <strong>{bet.type} </strong>
 
                         {bet.result == "Loss" ? (
-                          <i class="text-danger bi bi-x-circle-fill"></i>
+                          <i className="text-danger bi bi-x-circle-fill"></i>
                         ) : (
-                          <i class="text-success bi bi-check-circle-fill"></i>
+                          <i className="text-success bi bi-check-circle-fill"></i>
                         )}
                       </div>
 
@@ -158,9 +158,9 @@ const BettingHistory = () => {
                                     <strong>RESULT</strong> <span>{betDetails.result}   </span>
 
                                   {betDetails.result == "Loss" ? (
-                                    <i class="text-danger bi bi-x-circle-fill"></i>
+                                    <i className="text-danger bi bi-x-circle-fill"></i>
                                   ) : (
-                                    <i class="text-success bi bi-check-circle-fill"></i>
+                                    <i className="text-success bi bi-check-circle-fill"></i>
                                   )}
                                   </div>
                                 </div>
