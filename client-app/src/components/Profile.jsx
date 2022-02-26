@@ -7,10 +7,39 @@ import BettingHistory from "./BettingHistory";
 const Profile = (props) => {
   const { id } = useParams();
   const chosenBetFilter = useRef();
+  const [username, setUsername] = useState("");
+
   const [selectedBetFilter, setSelectedBetFilter] = useState("overall");
 
   const [betStats, setBetStats] = useState({});
   
+    
+  useEffect(() => {
+    getUsername();
+  });
+
+  const getUsername = async () => {
+    let url = "http://localhost:3001/api/username";
+
+    await axios
+      .get(url, {
+        params: {
+          id: id,
+        },
+      })
+      .then(function (response) {
+        if (response.data.success == true) {
+          let data = response.data.result;
+
+          setUsername(data);
+
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getBetStats();
   }, [selectedBetFilter]);
@@ -61,7 +90,7 @@ const Profile = (props) => {
       <Container>
         <Row>
           <h1 className="text-center headingLine">Profile</h1>
-          <h5 className="text-center">{props.email}</h5>
+          <h5 className="text-center">{username}</h5>
         </Row>
         <Row>
           <h5 className="text-center headingLine">Stats</h5>

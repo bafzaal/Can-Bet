@@ -60,4 +60,50 @@ router.get("/api/display-bets", async (req, res) => {
   return res.status(400).json({ success: false });
 });
 
+router.get("/api/display-leaderboard", async (req, res) => {
+  let filterParam = req.query.filter;
+
+  let sports = ["NHL", "NBA", "NFL"];
+  let betTypes = ["moneyline", "spread", "parlay"];
+
+  try {
+    if (filterParam == "overall") {
+      const stats = await Users.find()
+        .select({ "stats.overall.all": 1, _id: 1, username: 1 })
+        .exec();
+
+      return res.status(200).json({ success: true, result: stats });
+    } else if (sports.includes(filterParam)) {
+      const stats = await Users.find()
+        .select({ "stats.sports": 1, _id: 1, username: 1 })
+        .exec();
+
+      return res.status(200).json({ success: true, result: stats });
+    } else if (betTypes.includes(filterParam)) {
+      const stats = await Users.find()
+        .select({ "stats.betTypes": 1, _id: 1, username: 1 })
+        .exec();
+        return res.status(200).json({ success: true, result: stats });
+      }
+  } catch (error) {
+    console.log(error)
+    return res.status(400).send(error);
+  }
+
+  return res.status(400).json({ success: false });
+});
+
+
+router.get("/api/username", async (req, res) => {
+  let id = req.query.id;
+  const user = await Users.findById(id).exec();
+  if(user){
+    return res.status(200).json({ success: true, result: user.username });
+
+  }
+  return res.status(400).json({ success: false });
+
+
+});
+
 module.exports = router;

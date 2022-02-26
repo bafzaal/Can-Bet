@@ -20,7 +20,7 @@ const Navbar = (props) => {
                             </li>
             
                             <li className="nav-item">
-                                <NavLink to="/" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
+                                <NavLink to="/leaderboards" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/upcoming/games" className="nav-link" href="#">Games</NavLink> {/*Placeholder*/}

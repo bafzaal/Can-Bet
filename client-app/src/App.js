@@ -12,6 +12,8 @@ import BettingLines from "./components/BettingLines";
 import UpcomingGames from "./components/UpcomingGames";
 import PlaceBets from "./components/PlaceBets";
 import Profile from "./components/Profile";
+import Leaderboards from "./components/Leaderboards";
+
 function App() {
   
   const [isTokenValidated, setIsTokenValidated] = useState(false);
@@ -70,7 +72,7 @@ function App() {
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
-        
+        <Route exact path="/leaderboards" element={<Leaderboards />}></Route>
          {isTokenValidated ? (
            <>
             <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}>  
