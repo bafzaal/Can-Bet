@@ -73,10 +73,10 @@ function App() {
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
         <Route exact path="/leaderboards" element={<Leaderboards />}></Route>
+        <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}>  
+            </Route>
          {isTokenValidated ? (
            <>
-            <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}>  
-            </Route>
             <Route path="/account-settings/:id" element={<AccountSettings />}>  
             </Route>
             <Route path="/place-bets" element={<PlaceBets id={userId} />}></Route>

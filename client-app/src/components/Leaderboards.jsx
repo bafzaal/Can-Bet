@@ -181,6 +181,8 @@ const Leaderboards = () => {
       <Container>
         <Row>
           <h1 className="text-center headingLine">Leaderboards</h1>
+          <img className="leaderboards-img" src="https://img.icons8.com/external-smashingstocks-glyph-smashing-stocks/66/000000/external-best-digital-marketing-smashingstocks-glyph-smashing-stocks.png"/>
+
         </Row>
         <Row className="mrgn-btm-3p">
           <Form>
@@ -225,8 +227,8 @@ const Leaderboards = () => {
                             <span>
                               {column.isSorted
                                 ? column.isSortedDesc
-                                  ? <i class="bi text-danger bi-arrow-down-square-fill"></i>
-                                  : <i class="bi text-success bi-arrow-up-square-fill"></i>
+                                  ? <i className="bi text-danger bi-arrow-down-square-fill"></i>
+                                  : <i className="bi text-success bi-arrow-up-square-fill"></i>
                                 : ""}
                             </span>
                           </th>
