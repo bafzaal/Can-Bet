@@ -128,7 +128,7 @@ router.post("/api/place-bets-form", async (req, res) => {
   let betResult = "Win";
 
   if (size > 1) {
-    betType = "Multiple";
+    betType = "Parlay";
   } else if (size == 1) {
     betType = bets.betContents[0].type;
   }
