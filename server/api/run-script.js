@@ -1,9 +1,12 @@
 const express = require("express");
 const axios = require("axios");
 var router = express.Router();
+const csv = require("csv-parser");
+const { Readable } = require("stream");
 
 const GameSchema = require("../models/gameSchema");
 const OddsSchema = require("../models/oddsSchema");
+const TeamMappings = require("../models/teamMapSchema")
 
 const PROLINE_NBA = require("../script-configs/proline_NBA")
 const PROLINE_NHL = require("../script-configs/proline_NHL")
@@ -12,6 +15,38 @@ const PROLINE_configs = {
     "nhl": PROLINE_NHL,
     "nba": PROLINE_NBA
 }
+
+router.post("/api/run/script/team/mappings", async(req, res) => {
+    if (!req.files) {
+        res.send("File was not found");
+        return;
+    }
+    const file = req.files.file;
+
+    const bufferStream = Readable.from(file.data.toString());
+    const results = [];
+
+    bufferStream
+        .pipe(csv())
+        .on("data", (data) => results.push(data))
+        .on("end", () => {
+            mappings = results.map((result) => {
+                return {
+                    book: result.Book,
+                    league: result.League,
+                    value: result.Value,
+                    mapping: result.Mapping
+                }
+            })
+            TeamMappings.insertMany(mappings, (err) => {
+                if (err) {
+                    res.status(500).send("Internal Server Error")
+                } else {
+                    res.send(mappings)
+                }
+            })
+        });
+})
 
 router.get("/api/run/script/schedule/nba", async(req, res) => {
     console.log("GET /api/run/script/schedule/nba")
@@ -40,53 +75,84 @@ router.get("/api/run/script/schedule/nhl", async(req, res) => {
 router.get("/api/run/script/odds", async(req, res) => {
     let league = req.query.league;
     console.log(`${new Date()}: GET /api/run/script/odds?league=${league}`)
-    var config = PROLINE_configs[league]
 
-    axios(config)
-        .then(function(response) {
-            items_arr = Object.entries(response.data.items)
-            items = items_arr.map(([key, value]) => { // need to map the id of the items into their object, instead of as a key-value pair
-                obj = value
-                value.id = key
-                return obj
-            })
-            e_items = items.filter((x) => { return x.type == "EventDataItem" })
-            m_items = items.filter((x) => { return x.type == "MarketDataItem" })
-            o_items = items.filter((x) => { return x.type == "OutcomeDataItem" && x.desc == x.teamDescription })
-            oddsObjects = o_items.map((item) => {
-                market = m_items.filter((x) => { return item.parent == x.id })[0]
-                game = e_items.filter((x) => { return market.parent == x.id })[0]
-                d = new Date(game.startDateTime)
-                d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
-                obj = {
-                    league: league,
-                    home_team: game.a,
-                    away_team: game.b,
-                    day_string: d_string,
-                    team: item.teamDescription,
-                    price: item.price,
-                    book: "Proline+"
-                }
-                return obj
-            })
-            OddsSchema.insertMany(oddsObjects, (err) => {
-                if (err) {
-                    res.status(500).send("Internal Server Error")
-                } else {
-                    res.send({
-                        league: league,
-                        games: e_items.length
-                    })
-                }
-            })
+    async function run() {
+        try {
+            getMappings(league, res, getProlineOdds)
+        } catch (e) {
+            res.status(500).send("Internal Server Error")
+        }
+    }
+
+    async function getMappings(league, res, callback) {
+        TeamMappings.find({ league: league }, (err, docs) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, docs, res)
+            }
         })
-        .catch(function(error) {
-            console.log(error);
-        });
+    }
+
+    async function getProlineOdds(league, mappings, res) {
+        var config = PROLINE_configs[league]
+        axios(config)
+            .then(function(response) {
+                items_arr = Object.entries(response.data.items)
+                items = items_arr.map(([key, value]) => { // need to map the id of the items into their object, instead of as a key-value pair
+                    obj = value
+                    value.id = key
+                    return obj
+                })
+                e_items = items.filter((x) => { return x.type == "EventDataItem" })
+                m_items = items.filter((x) => { return x.type == "MarketDataItem" })
+                o_items = items.filter((x) => { return x.type == "OutcomeDataItem" && x.desc == x.teamDescription })
+                oddsObjects = o_items.map((item) => {
+                    market = m_items.filter((x) => { return item.parent == x.id })[0]
+                    game = e_items.filter((x) => { return market.parent == x.id })[0]
+                    d = new Date(game.startDateTime)
+                    d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
+                    obj = {
+                        league: league,
+                        home_team: teamMap(game.a, mappings),
+                        away_team: teamMap(game.b, mappings),
+                        day_string: d_string,
+                        team: teamMap(item.teamDescription, mappings),
+                        price: item.price,
+                        book: "Proline+"
+                    }
+                    return obj
+                })
+                OddsSchema.insertMany(oddsObjects, (err) => {
+                    if (err) {
+                        res.status(500).send("Internal Server Error")
+                    } else {
+                        res.send({
+                            league: league,
+                            games: e_items.length
+                        })
+                    }
+                })
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
+    run()
 })
 
 function formatNumber(number) {
     return ("0" + number).toString().slice(-2)
+}
+
+function teamMap(name, mappings) {
+    mapping = mappings.filter((x) => { return x.value == name })[0]
+    if (mapping) {
+        return mapping.mapping
+    } else {
+        return name
+    }
 }
 
 async function submitSchedule(sport, league, date, res) {
