@@ -16,7 +16,18 @@ const PROLINE_configs = {
     "nba": PROLINE_NBA
 }
 
+const END_DATES = {
+    "nhl": new Date("2022-04-30"),
+    "nba": new Date("2022-04-11")
+}
+
+const SPORTS = {
+    "nhl": "hockey",
+    "nba": "basketball"
+}
+
 router.post("/api/run/script/team/mappings", async(req, res) => {
+    console.log(`${new Date()}: POST /api/run/script/team/mappings`)
     if (!req.files) {
         res.send("File was not found");
         return;
@@ -48,29 +59,18 @@ router.post("/api/run/script/team/mappings", async(req, res) => {
         });
 })
 
-router.get("/api/run/script/schedule/nba", async(req, res) => {
-    console.log("GET /api/run/script/schedule/nba")
-    const end_date = new Date("2022-04-11")
+router.get("/api/run/script/schedule", async(req, res) => {
+    league = req.query.league
+    console.log(`${new Date()}: GET /api/run/script/schedule?league=${league}`)
+    const end_date = END_DATES[league]
     var daysOfYear = [];
     for (var d = new Date(); d <= end_date; d.setDate(d.getDate() + 1)) {
         d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
-        await submitSchedule("basketball", "nba", d_string, res);
+        await submitSchedule(SPORTS[league], league, d_string, res);
         daysOfYear.push(d_string);
     }
     res.send(daysOfYear)
 });
-
-router.get("/api/run/script/schedule/nhl", async(req, res) => {
-    console.log("GET /api/run/script/schedule/nhl")
-    const end_date = new Date("2022-04-30")
-    var daysOfYear = [];
-    for (var d = new Date(); d <= end_date; d.setDate(d.getDate() + 1)) {
-        d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
-        await submitSchedule("hockey", "nhl", d_string, res);
-        daysOfYear.push(d_string);
-    }
-    res.send(daysOfYear)
-})
 
 router.get("/api/run/script/odds", async(req, res) => {
     let league = req.query.league;
