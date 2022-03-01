@@ -10,10 +10,17 @@ const TeamMappings = require("../models/teamMapSchema")
 
 const PROLINE_NBA = require("../script-configs/proline_NBA")
 const PROLINE_NHL = require("../script-configs/proline_NHL")
+const BODOG_NBA = require("../script-configs/bodog_NBA")
+const BODOG_NHL = require("../script-configs/bodog_NHL")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
     "nba": PROLINE_NBA
+}
+
+const BODOG_configs = {
+    "nhl": BODOG_NHL,
+    "nba": BODOG_NBA
 }
 
 const END_DATES = {
@@ -72,9 +79,9 @@ router.get("/api/run/script/schedule", async(req, res) => {
     res.send(daysOfYear)
 });
 
-router.get("/api/run/script/odds", async(req, res) => {
+router.get("/api/run/script/odds/proline", async(req, res) => {
     let league = req.query.league;
-    console.log(`${new Date()}: GET /api/run/script/odds?league=${league}`)
+    console.log(`${new Date()}: GET /api/run/script/odds/proline?league=${league}`)
 
     async function run() {
         try {
@@ -140,6 +147,59 @@ router.get("/api/run/script/odds", async(req, res) => {
     }
 
     run()
+})
+
+router.get("/api/run/script/odds/bodog", async(req, res) => {
+    let league = req.query.league
+    var config = BODOG_configs[league]
+
+    console.log(`${new Date()}: GET /api/run/script/odds/bodog?league=${league}`)
+
+    axios(config)
+        .then(function(response) {
+            let items = response.data[0].events
+            let oddsObjects = items.map((event) => {
+                let home_team = event.competitors.filter((x) => { return x.home })[0]
+                let away_team = event.competitors.filter((x) => { return !x.home })[0]
+                let outcomes = event.displayGroups[0].markets.filter((x) => { return x.description == "Moneyline" })[0].outcomes
+                d = new Date(event.startTime)
+                d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
+                return [{
+                        league: league,
+                        home_team: home_team.name,
+                        away_team: away_team.name,
+                        day_string: d_string,
+                        team: outcomes[0].description,
+                        price: outcomes[0].price.decimal,
+                        book: "bodog"
+                    },
+                    {
+                        league: league,
+                        home_team: home_team.name,
+                        away_team: away_team.name,
+                        day_string: d_string,
+                        team: outcomes[1].description,
+                        price: outcomes[1].price.decimal,
+                        book: "bodog"
+                    }
+                ]
+            })
+            flattened_odds = oddsObjects.flat()
+            OddsSchema.insertMany(flattened_odds, (err) => {
+                if (err) {
+                    res.status(500).send("Internal Server Error")
+                } else {
+                    res.send({
+                        league: league,
+                        games: items.length
+                    })
+                }
+            })
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
 })
 
 function formatNumber(number) {
