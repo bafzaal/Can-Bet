@@ -12,6 +12,8 @@ const PROLINE_NBA = require("../script-configs/proline_NBA")
 const PROLINE_NHL = require("../script-configs/proline_NHL")
 const BODOG_NBA = require("../script-configs/bodog_NBA")
 const BODOG_NHL = require("../script-configs/bodog_NHL")
+const BET99_NBA = require("../script-configs/bet99_NBA")
+const BET99_NHL = require("../script-configs/bet99_NHL")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
@@ -21,6 +23,11 @@ const PROLINE_configs = {
 const BODOG_configs = {
     "nhl": BODOG_NHL,
     "nba": BODOG_NBA
+}
+
+const BET99_configs = {
+    "nhl": BET99_NHL,
+    "nba": BET99_NBA
 }
 
 const END_DATES = {
@@ -200,6 +207,79 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
             console.log(error);
         });
 
+})
+
+router.get("/api/run/script/odds/bet99", async(req, res) => {
+    let league = req.query.league
+    var config = BET99_configs[league]
+
+    console.log(`${new Date()}: GET /api/run/script/odds/bet99?league=${league}`)
+
+    async function run() {
+        try {
+            getMappings(league, res, getOdds)
+        } catch (e) {
+            res.status(500).send("Internal Server Error")
+        }
+    }
+
+    async function getMappings(league, res, callback) {
+        TeamMappings.find({ league: league }, (err, docs) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, docs, res)
+            }
+        })
+    }
+
+    async function getOdds(league, mappings, res) {
+        axios(config)
+            .then(function(response) {
+                items = response.data.Result.Items[0].Events
+                oddsObjects = items.map((item) => {
+                    home_team = item.Name.split(" vs. ")[0]
+                    away_team = item.Name.split(" vs. ")[1]
+                    d = new Date(item.EventDate)
+                    d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
+                    return [{
+                            league: league,
+                            home_team: teamMap(home_team, mappings),
+                            away_team: teamMap(away_team, mappings),
+                            day_string: d_string,
+                            team: teamMap(item.Items[0].Items[0].Name, mappings),
+                            price: item.Items[0].Items[0].Price,
+                            book: "Bet99"
+                        },
+                        {
+                            league: league,
+                            home_team: teamMap(home_team, mappings),
+                            away_team: teamMap(away_team, mappings),
+                            day_string: d_string,
+                            team: teamMap(item.Items[0].Items[1].Name, mappings),
+                            price: item.Items[0].Items[1].Price,
+                            book: "Bet99"
+                        }
+                    ]
+                })
+                flattened_odds = oddsObjects.flat()
+                OddsSchema.insertMany(flattened_odds, (err) => {
+                    if (err) {
+                        res.status(500).send("Internal Server Error")
+                    } else {
+                        res.send({
+                            league: league,
+                            games: items.length
+                        })
+                    }
+                })
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
+    run()
 })
 
 function formatNumber(number) {
