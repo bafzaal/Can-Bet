@@ -20,6 +20,7 @@
     "express-fileupload": "^1.2.1",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
+    "mathjs": "^10.1.1",
     "mongoose": "^6.0.13",
     "nodemon": "^2.0.15",
     "stream": "^0.0.2"

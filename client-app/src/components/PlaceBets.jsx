@@ -3,8 +3,74 @@ import axios from "axios";
 import MoneyLineForm from "./MoneyLineForm";
 import SpreadForm from "./SpreadForm";
 import { Row, Form, Container, Col, Button, Select } from "react-bootstrap";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 const PlaceBets = (props) => {
+  const [stakeThreshold, setSteakThreshold] = useState(0);
+  const [betFrequency, setBetFrequency] = useState(0);
+  const [betLimit, setBetLimit] = useState(0);
+  const { id } = props
+   useEffect(() => {
+     if (id != "") {
+      getBetThreshold();
+      getBetFrequency();
+      getUserBetLimit();
+     }
+  }, [id]);
+
+  const getBetThreshold = async () => {
+    let thresholdUrl = "http://localhost:3001/api/stake-threshold";
+    await axios
+      .get(thresholdUrl, {
+        params: {
+          id: props.id
+        },
+      })
+      .then(function(response) {
+        setSteakThreshold(response.data.stakeThreshold);
+        console.log(response.data.stakeThreshold);
+        console.log(stakeThreshold);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  const getBetFrequency = async () => {
+    let betFreqUrl = "http://localhost:3001/api/bet-frequency";
+    await axios
+      .get(betFreqUrl, {
+        params: {
+          id: props.id
+        },
+      })
+      .then(function(response) {
+        setBetFrequency(response.data.betCountLast1h);
+        console.log(response.data.betCountLast1h);
+        console.log(betFrequency);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  const getUserBetLimit = async () => {
+    let betlimitUrl = "http://localhost:3001/api/bet-limit";
+    await axios
+    .get(betlimitUrl, {
+      params: {
+        id: props.id
+      },
+    })
+    .then(function(response) {
+      setBetLimit(response.data.betLimit);
+      console.log("teserers",response.data.betLimit);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
   const onChange = (e) => {
     let url = "http://localhost:3001/api/place-bets-file";
     let file = e.target.files[0];
@@ -114,18 +180,7 @@ const PlaceBets = (props) => {
     setFormDetails({ ...formDetails, [name]: value });
   };
 
-  const SubmitBets = () => {
-    let updatedForm = betFormsData.filter((e) => {
-      return e.id != null;
-    });
-
-    let postData = {
-      id: props.id,
-      stake: formDetails.stake,
-      payout: formDetails.payout,
-      sportsbook: formDetails.sportsBook,
-      betContents: updatedForm,
-    };
+  const submitForm = (postData) => {
     let url = "http://localhost:3001/api/place-bets-form";
     axios
       .post(url, postData, {})
@@ -136,6 +191,98 @@ const PlaceBets = (props) => {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  const SubmitBets = (e) => {
+    let updatedForm = betFormsData.filter((e) => {
+      return e.id != null;
+    });
+    e.preventDefault();
+    let postData = {
+      id: props.id,
+      stake: formDetails.stake,
+      payout: formDetails.payout,
+      sportsbook: formDetails.sportsBook,
+      betContents: updatedForm,
+    };
+    
+    // CHECK FOR HIGH STAKE, FREQUENT BET
+    if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && betFrequency > 8 && formDetails.stake > betLimit) {
+      confirmAlert({
+        title: 'NOTICE',
+        message: 'You have placed more tha 8 bets in the last hour, your stake is unusually high and you have exceeded your set stake limit. Please feel free to reach out to the Reponsible Gambling page on this site.',
+        buttons: [
+          // {
+          //   label: 'Yes',
+          //   onClick: () => submitForm(postData)
+          // },
+          {
+            label: 'OK',
+          }
+        ]
+      });
+    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && formDetails.stake > betLimit) {
+       confirmAlert({
+        title: 'NOTICE',
+        message: 'Your stake is unusually high and has exceeded the set limit, are you sure you want to submit?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => submitForm(postData)
+          },
+          {
+            label: 'No',
+          }
+        ]
+      });
+    } else if (stakeThreshold && betFrequency > 5 && formDetails.stake > betLimit) {
+        confirmAlert({
+        title: 'NOTICE',
+        message: 'You have placed more than 5 bets in the last hour and has exceeded the set limit, are you sure you want to submit?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => submitForm(postData)
+          },
+          {
+            label: 'No',
+          }
+        ]
+      });
+    } else if (stakeThreshold && betFrequency > 8 && formDetails.stake > betLimit) {
+      //alert user
+    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold) {
+       confirmAlert({
+        title: 'NOTICE',
+        message: 'Your stake is unusually high, are you sure you want to submit?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => submitForm(postData)
+          },
+          {
+            label: 'No',
+          }
+        ]
+      });
+    } else if(formDetails.stake > betLimit) {
+       confirmAlert({
+        title: 'NOTICE',
+        message: 'You have exceed the set bet amount!',
+        buttons: [
+          // {
+          //   label: 'Yes',
+          //   onClick: () => submitForm(postData)
+          // },
+          {
+            label: 'Got it',
+          }
+        ]
+      });
+    }
+    else {
+      submitForm(postData)
+    }
   };
   return (
     <>

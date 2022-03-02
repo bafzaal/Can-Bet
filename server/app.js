@@ -10,6 +10,7 @@ const app = express();
 
 let bets = require("./api/bets");
 let betDetails = require("./api/bet-details");
+let users = require("./api/users");
 
 
 app.use(cors())
@@ -180,6 +181,6 @@ app.listen(port, () => {
 });
 
 
-app.use("/", bets, betDetails);
+app.use("/", bets, betDetails, users);
 
 module.exports = app;
