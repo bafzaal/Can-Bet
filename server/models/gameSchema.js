@@ -29,6 +29,10 @@ const gameSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    home_logo: {
+        type: String,
+        required: true
+    },
     home_score: {
         type: Number,
         required: false
@@ -38,6 +42,10 @@ const gameSchema = new mongoose.Schema({
         required: true
     },
     away_team_abbr: {
+        type: String,
+        required: true
+    },
+    away_logo: {
         type: String,
         required: true
     },
@@ -53,6 +61,10 @@ const gameSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    timestamp: {
+        type: Date,
+        required: true
     }
 });
 

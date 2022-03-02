@@ -28,6 +28,10 @@ const oddsSchema = new mongoose.Schema({
     book: {
         type: String,
         required: true
+    },
+    timestamp: {
+        type: Date,
+        required: true
     }
 });
 

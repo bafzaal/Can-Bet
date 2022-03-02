@@ -74,13 +74,14 @@ router.post("/api/run/script/team/mappings", async(req, res) => {
 })
 
 router.get("/api/run/script/schedule", async(req, res) => {
-    league = req.query.league
-    console.log(`${new Date()}: GET /api/run/script/schedule?league=${league}`)
+    let league = req.query.league
+    let timestamp = new Date()
+    console.log(`${timestamp}: GET /api/run/script/schedule?league=${league}`)
     const end_date = END_DATES[league]
     var daysOfYear = [];
     for (var d = new Date(); d <= end_date; d.setDate(d.getDate() + 1)) {
         d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
-        await submitSchedule(SPORTS[league], league, d_string, res);
+        await submitSchedule(SPORTS[league], league, d_string, timestamp, res);
         daysOfYear.push(d_string);
     }
     res.send(daysOfYear)
@@ -88,7 +89,9 @@ router.get("/api/run/script/schedule", async(req, res) => {
 
 router.get("/api/run/script/odds/proline", async(req, res) => {
     let league = req.query.league;
-    console.log(`${new Date()}: GET /api/run/script/odds/proline?league=${league}`)
+    let timestamp = new Date();
+
+    console.log(`${timestamp}: GET /api/run/script/odds/proline?league=${league}`)
 
     async function run() {
         try {
@@ -133,7 +136,8 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
                         day_string: d_string,
                         team: teamMap(item.teamDescription, mappings),
                         price: item.price,
-                        book: "Proline+"
+                        book: "Proline+",
+                        timestamp: timestamp
                     }
                     return obj
                 })
@@ -159,8 +163,9 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
 router.get("/api/run/script/odds/bodog", async(req, res) => {
     let league = req.query.league
     var config = BODOG_configs[league]
+    let timestamp = new Date()
 
-    console.log(`${new Date()}: GET /api/run/script/odds/bodog?league=${league}`)
+    console.log(`${timestamp}: GET /api/run/script/odds/bodog?league=${league}`)
 
     axios(config)
         .then(function(response) {
@@ -178,7 +183,8 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                         day_string: d_string,
                         team: outcomes[0].description,
                         price: outcomes[0].price.decimal,
-                        book: "bodog"
+                        book: "bodog",
+                        timestamp: timestamp
                     },
                     {
                         league: league,
@@ -187,7 +193,8 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                         day_string: d_string,
                         team: outcomes[1].description,
                         price: outcomes[1].price.decimal,
-                        book: "bodog"
+                        book: "bodog",
+                        timestamp: timestamp
                     }
                 ]
             })
@@ -212,8 +219,9 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
 router.get("/api/run/script/odds/bet99", async(req, res) => {
     let league = req.query.league
     var config = BET99_configs[league]
+    let timestamp = new Date()
 
-    console.log(`${new Date()}: GET /api/run/script/odds/bet99?league=${league}`)
+    console.log(`${timestamp}: GET /api/run/script/odds/bet99?league=${league}`)
 
     async function run() {
         try {
@@ -249,7 +257,8 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                             day_string: d_string,
                             team: teamMap(item.Items[0].Items[0].Name, mappings),
                             price: item.Items[0].Items[0].Price,
-                            book: "Bet99"
+                            book: "Bet99",
+                            timestamp: timestamp
                         },
                         {
                             league: league,
@@ -258,7 +267,8 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                             day_string: d_string,
                             team: teamMap(item.Items[0].Items[1].Name, mappings),
                             price: item.Items[0].Items[1].Price,
-                            book: "Bet99"
+                            book: "Bet99",
+                            timestamp: timestamp
                         }
                     ]
                 })
@@ -295,7 +305,7 @@ function teamMap(name, mappings) {
     }
 }
 
-async function submitSchedule(sport, league, date, res) {
+async function submitSchedule(sport, league, date, timestamp, res) {
     var config = {
         method: 'get',
         url: `https://site.web.api.espn.com/apis/v2/scoreboard/header?sport=${sport}&league=${league}&region=us&lang=en&contentorigin=espn&buyWindow=1m&showAirings=buy%2Clive%2Creplay&showZipLookup=true&tz=America%2FNew_York&dates=${date}`,
@@ -329,12 +339,15 @@ async function submitSchedule(sport, league, date, res) {
                         league: league,
                         home_team: home.displayName,
                         home_team_abbr: home.abbreviation,
+                        home_logo: home.logo,
                         home_score: home.score,
                         away_team: away.displayName,
                         away_team_abbr: away.abbreviation,
+                        away_logo: away.logo,
                         away_score: away.score,
                         espn_link: event.link,
-                        game_over: event.fullStatus.type.completed
+                        game_over: event.fullStatus.type.completed,
+                        timestamp: timestamp
                     }
                 })
                 GameSchema.insertMany(gameObjects, (err) => {

@@ -1,42 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import ClipLoader from "react-spinners/ClipLoader";
 import PropTypes, { func } from 'prop-types';
-import NFL from '../images/NFL.png'
-import UNIBET from '../images/UNIBET.jpeg'
-import BarstoolSportsbook from '../images/Barstool-Sportsbook.png'
-import DraftKings from '../images/DraftKings.jpeg'
-import FanDuel from '../images/FanDuel.jpeg'
-import FoxBet from '../images/FoxBet.jpeg'
-import * as ReactBootStrap from 'react-bootstrap';
-import { Form, Card, Button, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 import GameCard from './GameCard'
+import { Row, Form, Container, Col, Button } from "react-bootstrap";
 
 ShowUpcoming.propTypes = {
     games: PropTypes.array,
-    selectedDate: PropTypes.instanceOf(Date),
-    selectedLeague: PropTypes.string
+    odds: PropTypes.array
 };
 ShowUpcoming.defaultProps = {
     games: [],
-    selectedDate: new Date(),
-    selectedLeague: "All"
+    odds: []
 };
 
-var currentDate = new Date()
-var currentDateTime
-
-function toggleOdds(game) {
-    game.oddsHidden = false;
-    console.log(game)
-}
-
-function datesAreOnSameDay(first, second) {
-    return (first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate())
-}
+let currentDateTime = new Date().toLocaleString()
 
 function ShowUpcoming(props) {
-    const { games, selectedDate, selectedLeague } = props
+    const { games, odds } = props
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -46,29 +26,15 @@ function ShowUpcoming(props) {
         }, 1500)
     }, [])
 
-    const mapGames = [] // [{game name, unitbet, ...}] game name, game time, map to values
-    let i = 0
-    games.forEach(function (item) {
-        i++;
-        var gameDate = new Date(item.commence_time * 1000); // according to local time zone
-        //localDate.setUTCMinutes(item.commence_time)
-        //console.log()
-        const options = { weekday: 'long', month: 'long', day: 'numeric' };
-        const options_time = { hour: "numeric", minute: "2-digit" }
-        currentDateTime = "Last Updated: " + currentDate.toLocaleString()
-        if (datesAreOnSameDay(gameDate, selectedDate)) {
-            mapGames.push({ gameNames: item.teams, league: item.sport_nice, gameTime: gameDate.toLocaleDateString(undefined, options) + " (" + gameDate.toLocaleTimeString(undefined, options_time) + ")", gameItem: item})
-        }
-    });
-    let nhlGames = mapGames.filter((game) => { return game.league == "NHL" })
-    let nflGames = mapGames.filter((game) => { return game.league == "NFL" })
-    let nbaGames = mapGames.filter((game) => { return game.league == "NBA" })
-    let showNHL = selectedLeague == "NHL" || selectedLeague == "All"
-    let showNFL = selectedLeague == "NFL" || selectedLeague == "All"
-    let showNBA = selectedLeague == "NBA" || selectedLeague == "All"
-    let noGamesNHL = nhlGames.length == 0 && showNHL
-    let noGamesNFL = nflGames.length == 0 && showNFL
-    let noGamesNBA = nbaGames.length == 0 && showNBA
+    let game_maps = games.map((game) => {
+        let game_odds = odds.filter((x) => {
+            return x.league == game.league && x.home_team == game.home_team && x.away_team == game.away_team && x.day_string == game.day_string
+        })
+        game.odds = game_odds
+        return game
+    })
+    let nhl_games = game_maps.filter((x) => { return x.league == "nhl"})
+    let nba_games = game_maps.filter((x) => { return x.league == "nba"})
 
     return (
         <div>
@@ -80,42 +46,23 @@ function ShowUpcoming(props) {
                     :
                     <>
                         <Row>
-                            {showNFL &&
-                                <h5 className="headingLine">NFL</h5>
-                            }
-                            {noGamesNFL &&
-                                <p className="text-center">No NFL Games Today</p>
-                            }
-                            {showNFL &&
-                                nflGames.map((game, i) => {
-                                    return <Col xs="6" key={game.id}>
-                                        <GameCard teams={game.gameNames} gameTime={game.gameTime} gameItem={game.gameItem}></GameCard>
-                                    </Col>
-                                })
-                            }
-                            {showNHL &&
+                            {nhl_games.length > 0 &&
                                 <h5 className="pull-left headingLine">NHL</h5>
                             }
-                            {noGamesNHL &&
-                                <p className="text-center">No NHL Games Today</p>
-                            }
-                            {showNHL &&
-                                nhlGames.map((game, i) => {
-                                    return <Col xs="6" key={game.id}>
-                                        <GameCard teams={game.gameNames} gameTime={game.gameTime} gameItem={game.gameItem}></GameCard>      
+                            {nhl_games.length > 0 &&
+                                nhl_games.map((game, i) => {
+                                    return <Col xs="6" key={game.espnId}>
+                                        <GameCard game={game} odds={game.odds}></GameCard>      
                                     </Col>
                                 })
                             }
-                            {showNBA &&
+                            {nba_games.length > 0 &&
                                 <h5 className="headingLine">NBA</h5>
                             }
-                            {noGamesNBA &&
-                                <p className="text-center">No NBA Games Today</p>
-                            }
-                            {showNBA &&
-                                nbaGames.map((game, i) => {
-                                    return <Col xs="6" key={game.id}>
-                                        <GameCard teams={game.gameNames} gameTime={game.gameTime} gameItem={game.gameItem}></GameCard>
+                            {nba_games.length > 0 &&
+                                nba_games.map((game, i) => {
+                                    return <Col xs="6" key={game.espnId}>
+                                        <GameCard game={game} odds={game.odds}></GameCard>
                                     </Col>
                                 })
                             }
