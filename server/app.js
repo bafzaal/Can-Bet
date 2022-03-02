@@ -12,6 +12,7 @@ let bets = require("./api/bets");
 let statsDisplay = require("./api/stats-display");
 let run_script = require("./api/run-script");
 let games = require("./api/games");
+let odds = require("./api/odds");
 
 app.use(cors())
 app.use(fileupload());
@@ -181,6 +182,6 @@ app.listen(port, () => {
 });
 
 
-app.use("/", bets, statsDisplay, run_script, games);
+app.use("/", bets, statsDisplay, run_script, games, odds);
 
 module.exports = app;
