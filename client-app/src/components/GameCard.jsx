@@ -37,10 +37,10 @@ function GameCard(props) {
                     <Row className="mrgn-btm-3p">
                         <Col>
                             <Card.Text>
-                                <a href={game.espn_link} target="_blank" className="dark-link"><strong> {gameTime} </strong> <br /> </a>
-                                <img  height="15px" className="mrgn-rt-5px" src={game.home_logo}></img>{game.home_team} <strong>(H)</strong>
+                                <a href={game.espn_link} target="_blank" className="dark-link"> {gameTime} <br /> </a>
+                                <img  height="24px" className="mrgn-rt-5px" src={game.home_logo}></img>{game.home_team} <strong>(H)</strong>
                                 <br />
-                                <img  height="15px" className="mrgn-rt-5px" src={game.away_logo}></img>{game.away_team} <strong>(A)</strong>
+                                <img  height="24px" className="mrgn-rt-5px" src={game.away_logo}></img>{game.away_team} <strong>(A)</strong>
                             </Card.Text>
                         </Col>
                     </Row>
