@@ -13,6 +13,8 @@ import UpcomingGames from "./components/UpcomingGames";
 import PlaceBets from "./components/PlaceBets";
 import Profile from "./components/Profile";
 import Leaderboards from "./components/Leaderboards";
+import ResponsibleGambling from "./components/ResponsibleGambling";
+import BettingTips from "./components/BettingTips";
 
 function App() {
   
@@ -73,8 +75,9 @@ function App() {
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
         <Route exact path="/leaderboards" element={<Leaderboards />}></Route>
-        <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}>  
-            </Route>
+        <Route path="/profile/:id" element={<Profile id={userId} email={userEmail}/>}></Route>
+        <Route exact path="/responsible-gambling" element={<ResponsibleGambling />}></Route>
+        <Route exact path="betting-tips" element={<BettingTips />}></Route>
          {isTokenValidated ? (
            <>
             <Route path="/account-settings/:id" element={<AccountSettings />}>  

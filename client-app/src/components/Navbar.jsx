@@ -28,6 +28,13 @@ const Navbar = (props) => {
                               <li className="nav-item">
                                   <NavLink to="/place-bets" className="nav-link" href="#">Bets</NavLink> {/*Placeholder*/}
                               </li>
+
+                              <li className="nav-item">
+                                  <NavLink to="responsible-gambling" className="nav-link" href="#">Responsible Gambling</NavLink> {/*Placeholder*/}
+                              </li>
+                              <li className="nav-item">
+                                  <NavLink to="betting-tips" className="nav-link" href="#">Betting Tips</NavLink> {/*Placeholder*/}
+                              </li>
                   
                               </>:
                               <>

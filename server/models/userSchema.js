@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { intersect } = require('mathjs');
 
 // Document structure (Usually known as schema but MongoDB doesnt have a set schema)
 const statsSchema = new mongoose.Schema({
@@ -48,6 +49,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    stakeLimit: {
+        type: Number,
     },
     stats:
     {

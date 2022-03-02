@@ -6,6 +6,10 @@ const betsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  },
   size: {
     type: Number,
     required: true,
