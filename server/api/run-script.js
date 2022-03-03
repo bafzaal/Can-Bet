@@ -17,6 +17,7 @@ const BODOG_NCAAM = require("../script-configs/Bodog/bodog_NCAAM")
 const BET99_NBA = require("../script-configs/Bet99/bet99_NBA")
 const BET99_NHL = require("../script-configs/Bet99/bet99_NHL")
 const BET99_NCAAM = require("../script-configs/Bet99/bet99_NCAAM")
+const ESPN_config = require("../script-configs/ESPN")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
@@ -81,13 +82,74 @@ router.post("/api/run/script/team/mappings", async(req, res) => {
         });
 })
 
+router.get("/api/run/script/scores", async(req, res) => {
+    let league = req.query.league;
+    let date = req.query.date;
+    let timestamp = new Date()
+
+    console.log(`${timestamp}: GET /api/run/script/scores?league=${league}&date=${date}`)
+
+    async function run() {
+        try {
+            getGames(league, SPORTS[league], date, res, callESPN)
+        } catch (e) {
+            res.status(500).send("Interntal Server Error")
+        }
+    }
+
+    async function getGames(league, sport, date, res, callback) {
+        GameSchema.find({ league: league, day_string: date }, (err, docs) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, sport, date, docs, res, updateScores)
+            }
+        })
+    }
+
+    async function callESPN(league, sport, date, games, res, callback) {
+        let search_league = league == "ncaam" ? "mens-college-basketball" : league
+        let config = ESPN_config
+        config.url = `https://site.web.api.espn.com/apis/v2/scoreboard/header?sport=${sport}&league=${search_league}&region=us&lang=en&contentorigin=espn&buyWindow=1m&showAirings=buy%2Clive%2Creplay&showZipLookup=true&tz=America%2FNew_York&dates=${date}`
+        axios(config)
+            .then(function(response) {
+                let events = response.data.sports[0].leagues[0].events;
+                callback(games, events, res)
+            })
+            .catch(function(error) {
+                console.log(error);
+                res.status(500).send("Internal server error")
+            });
+    }
+
+    async function updateScores(games, events, res) {
+        games.forEach((game) => {
+            let event = events.filter((x) => { return game.espnId == x.id })[0]
+            let home = event.competitors.filter((x) => { return x.homeAway == "home" })[0]
+            let away = event.competitors.filter((x) => { return x.homeAway == "away" })[0]
+            game.home_score = home.score
+            game.away_score = away.score
+            game.game_over = event.fullStatus.type.completed
+            GameSchema.updateMany({ _id: game._id }, game, (err, docs) => {
+                if (err) {
+                    res.status(500).send("Internal server error")
+                }
+            })
+
+        })
+        res.send("Success")
+    }
+
+    run()
+})
+
 router.get("/api/run/script/schedule", async(req, res) => {
     let league = req.query.league
     let timestamp = new Date()
     console.log(`${timestamp}: GET /api/run/script/schedule?league=${league}`)
     const end_date = END_DATES[league]
     var daysOfYear = [];
-    for (var d = new Date(); d <= end_date; d.setDate(d.getDate() + 1)) {
+    for (var d = new Date("2022-03-01"); d <= end_date; d.setDate(d.getDate() + 1)) {
         let d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
         await submitSchedule(SPORTS[league], league, d_string, timestamp, res);
         daysOfYear.push(d_string);
@@ -376,14 +438,14 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                         home_team_abbr: home.abbreviation,
                         home_logo: home.logo,
                         home_rank: home.rank,
-                        home_score: home.score,
+                        // home_score: home.score,
                         away_team: away.displayName,
                         away_team_abbr: away.abbreviation,
                         away_logo: away.logo,
                         away_rank: away.rank,
-                        away_score: away.score,
+                        // away_score: away.score,
                         espn_link: event.link,
-                        game_over: event.fullStatus.type.completed,
+                        // game_over: event.fullStatus.type.completed,
                         timestamp: timestamp
                     }
                 })
