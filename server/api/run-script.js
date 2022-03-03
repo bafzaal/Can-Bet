@@ -134,7 +134,7 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
                     d = new Date(game.startDateTime)
                     d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                     obj = {
-                        league: league,
+                        league: league == "mens-college-basketball" ? "ncaam" : league,
                         home_team: teamMap(game.a, mappings),
                         away_team: teamMap(game.b, mappings),
                         day_string: d_string,
@@ -150,7 +150,7 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
                         res.status(500).send("Internal Server Error")
                     } else {
                         res.send({
-                            league: league,
+                            league: league == "mens-college-basketball" ? "ncaam" : league,
                             games: e_items.length
                         })
                     }
@@ -181,7 +181,7 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                 d = new Date(event.startTime)
                 d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                 return [{
-                        league: league,
+                        league: league == "mens-college-basketball" ? "ncaam" : league,
                         home_team: home_team.name,
                         away_team: away_team.name,
                         day_string: d_string,
@@ -191,7 +191,7 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                         timestamp: timestamp
                     },
                     {
-                        league: league,
+                        league: league == "mens-college-basketball" ? "ncaam" : league,
                         home_team: home_team.name,
                         away_team: away_team.name,
                         day_string: d_string,
@@ -255,7 +255,7 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                     d = new Date(item.EventDate)
                     d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                     return [{
-                            league: league,
+                            league: league == "mens-college-basketball" ? "ncaam" : league,
                             home_team: teamMap(home_team, mappings),
                             away_team: teamMap(away_team, mappings),
                             day_string: d_string,
@@ -265,7 +265,7 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                             timestamp: timestamp
                         },
                         {
-                            league: league,
+                            league: league == "mens-college-basketball" ? "ncaam" : league,
                             home_team: teamMap(home_team, mappings),
                             away_team: teamMap(away_team, mappings),
                             day_string: d_string,
