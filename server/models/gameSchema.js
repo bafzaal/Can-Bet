@@ -70,6 +70,10 @@ const gameSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    clock: {
+        type: String,
+        require: false
+    },
     timestamp: {
         type: Date,
         required: true

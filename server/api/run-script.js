@@ -127,9 +127,11 @@ router.get("/api/run/script/scores", async(req, res) => {
             let event = events.filter((x) => { return game.espnId == x.id })[0]
             let home = event.competitors.filter((x) => { return x.homeAway == "home" })[0]
             let away = event.competitors.filter((x) => { return x.homeAway == "away" })[0]
+            let clock = event.fullStatus.type.completed ? "Final" : event.fullStatus.displayClock
             game.home_score = home.score
             game.away_score = away.score
             game.game_over = event.fullStatus.type.completed
+            game.clock = clock
             GameSchema.updateMany({ _id: game._id }, game, (err, docs) => {
                 if (err) {
                     res.status(500).send("Internal server error")
@@ -160,6 +162,8 @@ router.get("/api/run/script/schedule", async(req, res) => {
 router.get("/api/run/script/odds/proline", async(req, res) => {
     let league = req.query.league;
     let timestamp = new Date();
+
+    /* TODO for all odds: DELETE Old odds for league and book before adding the new ones */
 
     console.log(`${timestamp}: GET /api/run/script/odds/proline?league=${league}`)
 
@@ -428,6 +432,7 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                 let gameObjects = events.map((event) => {
                     let home = event.competitors.filter((x) => { return x.homeAway == "home" })[0]
                     let away = event.competitors.filter((x) => { return x.homeAway == "away" })[0]
+                    let clock = event.fullStatus.type.completed ? "Final" : event.fullStatus.displayClock
                     return {
                         espnId: event.id,
                         time: event.date,
@@ -438,14 +443,15 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                         home_team_abbr: home.abbreviation,
                         home_logo: home.logo,
                         home_rank: home.rank,
-                        // home_score: home.score,
+                        home_score: home.score,
                         away_team: away.displayName,
                         away_team_abbr: away.abbreviation,
                         away_logo: away.logo,
                         away_rank: away.rank,
-                        // away_score: away.score,
+                        away_score: away.score,
                         espn_link: event.link,
-                        // game_over: event.fullStatus.type.completed,
+                        game_over: event.fullStatus.type.completed,
+                        clock: clock,
                         timestamp: timestamp
                     }
                 })
