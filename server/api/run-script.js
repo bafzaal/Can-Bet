@@ -8,8 +8,9 @@ const GameSchema = require("../models/gameSchema");
 const OddsSchema = require("../models/oddsSchema");
 const TeamMappings = require("../models/teamMapSchema")
 
-const PROLINE_NBA = require("../script-configs/proline_NBA")
-const PROLINE_NHL = require("../script-configs/proline_NHL")
+const PROLINE_NBA = require("../script-configs/Proline/proline_NBA")
+const PROLINE_NHL = require("../script-configs/Proline/proline_NHL")
+const PROLINE_NCAAM = require("../script-configs/Proline/proline_NCAAM")
 const BODOG_NBA = require("../script-configs/bodog_NBA")
 const BODOG_NHL = require("../script-configs/bodog_NHL")
 const BET99_NBA = require("../script-configs/bet99_NBA")
@@ -17,7 +18,8 @@ const BET99_NHL = require("../script-configs/bet99_NHL")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
-    "nba": PROLINE_NBA
+    "nba": PROLINE_NBA,
+    "mens-college-basketball": PROLINE_NCAAM
 }
 
 const BODOG_configs = {
@@ -32,12 +34,14 @@ const BET99_configs = {
 
 const END_DATES = {
     "nhl": new Date("2022-04-30"),
-    "nba": new Date("2022-04-11")
+    "nba": new Date("2022-04-11"),
+    "mens-college-basketball": new Date("2022-03-7")
 }
 
 const SPORTS = {
     "nhl": "hockey",
-    "nba": "basketball"
+    "nba": "basketball",
+    "mens-college-basketball": "basketball"
 }
 
 router.post("/api/run/script/team/mappings", async(req, res) => {
@@ -336,14 +340,16 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                         time: event.date,
                         time_summary: event.summary,
                         day_string: date,
-                        league: league,
+                        league: league == "mens-college-basketball" ? "ncaam" : league,
                         home_team: home.displayName,
                         home_team_abbr: home.abbreviation,
                         home_logo: home.logo,
+                        home_rank: home.rank,
                         home_score: home.score,
                         away_team: away.displayName,
                         away_team_abbr: away.abbreviation,
                         away_logo: away.logo,
+                        away_rank: away.rank,
                         away_score: away.score,
                         espn_link: event.link,
                         game_over: event.fullStatus.type.completed,
@@ -352,6 +358,7 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                 })
                 GameSchema.insertMany(gameObjects, (err) => {
                     if (err) {
+                        console.log(err)
                         res.status(500).send("Internal Server Error")
                     } else {
                         return true;

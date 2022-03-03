@@ -33,8 +33,9 @@ function ShowUpcoming(props) {
         game.odds = game_odds
         return game
     })
-    let nhl_games = game_maps.filter((x) => { return x.league == "nhl"})
-    let nba_games = game_maps.filter((x) => { return x.league == "nba"})
+    let nhl_games = game_maps.filter((x) => { return x.league == "nhl" })
+    let nba_games = game_maps.filter((x) => { return x.league == "nba" })
+    let ncaam_games = game_maps.filter((x) => { return x.league == "ncaam" })
 
     return (
         <div>
@@ -52,7 +53,7 @@ function ShowUpcoming(props) {
                             {nhl_games.length > 0 &&
                                 nhl_games.map((game, i) => {
                                     return <Col xs="6" key={game.espnId}>
-                                        <GameCard game={game} odds={game.odds}></GameCard>      
+                                        <GameCard game={game} odds={game.odds}></GameCard>
                                     </Col>
                                 })
                             }
@@ -61,6 +62,16 @@ function ShowUpcoming(props) {
                             }
                             {nba_games.length > 0 &&
                                 nba_games.map((game, i) => {
+                                    return <Col xs="6" key={game.espnId}>
+                                        <GameCard game={game} odds={game.odds}></GameCard>
+                                    </Col>
+                                })
+                            }
+                            {ncaam_games.length > 0 &&
+                                <h5 className="headingLine">NCAAM</h5>
+                            }
+                            {ncaam_games.length > 0 &&
+                                ncaam_games.map((game, i) => {
                                     return <Col xs="6" key={game.espnId}>
                                         <GameCard game={game} odds={game.odds}></GameCard>
                                     </Col>

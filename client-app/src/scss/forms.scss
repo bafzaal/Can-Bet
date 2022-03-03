@@ -26,7 +26,7 @@
 }
 
 .OddsTable {
-    width: 20px !important;
+    // width: 20px !important;
     margin-left: auto !important;
     margin-right: auto !important;
 }
@@ -78,4 +78,12 @@
 
 a.dark-link:link {
     text-decoration: none;
+}
+
+.best-odds {
+    color: #00cc66;
+}
+
+.hidden {
+    display: none;
 }

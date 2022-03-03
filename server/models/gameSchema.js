@@ -31,7 +31,11 @@ const gameSchema = new mongoose.Schema({
     },
     home_logo: {
         type: String,
-        required: true
+        required: false
+    },
+    home_rank: {
+        type: String,
+        required: false
     },
     home_score: {
         type: Number,
@@ -47,7 +51,11 @@ const gameSchema = new mongoose.Schema({
     },
     away_logo: {
         type: String,
-        required: true
+        required: false
+    },
+    away_rank: {
+        type: String,
+        required: false
     },
     away_score: {
         type: Number,

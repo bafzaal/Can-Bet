@@ -6,10 +6,10 @@ import { Row, Card, Col, Button } from "react-bootstrap";
 import PROLINE from "../images/Proline-Plus.png"
 import BODOG from "../images/Bodog.png"
 import BET99 from "../images/Bet99.png"
-import GetGames from './GetGames'
+import OddsTable from './OddsTable'
 
 GameCard.propTypes = {
-    game: Object,
+    game: PropTypes.shape({}),
     odds: PropTypes.array
 };
 GameCard.defaultProps = {
@@ -38,9 +38,9 @@ function GameCard(props) {
                         <Col>
                             <Card.Text>
                                 <a href={game.espn_link} target="_blank" className="dark-link"> {gameTime} <br /> </a>
-                                <img  height="24px" className="mrgn-rt-5px" src={game.home_logo}></img>{game.home_team} <strong>(H)</strong>
+                                <img height="24px" className="mrgn-rt-5px" src={game.home_logo}></img><i className={game.home_rank ? null : "hidden"}>#{game.home_rank} </i>{game.home_team} <strong>(H)</strong>
                                 <br />
-                                <img  height="24px" className="mrgn-rt-5px" src={game.away_logo}></img>{game.away_team} <strong>(A)</strong>
+                                <img height="24px" className="mrgn-rt-5px" src={game.away_logo}></img><i className={game.away_rank ? null : "hidden"}>#{game.away_rank} </i>{game.away_team} <strong>(A)</strong>
                             </Card.Text>
                         </Col>
                     </Row>
@@ -57,7 +57,9 @@ function GameCard(props) {
                             }
                         </Col>
                         <Col xs="4">
-                            <Button variant="primary" className="pull-right" onClick={toggleOddsHidden}>Odds</Button>
+                            {odds.length > 0 &&
+                                <Button variant="primary" className="pull-right" onClick={toggleOddsHidden}>Odds</Button>
+                            }
                         </Col>
                     </Row>
                     <Row>
@@ -66,7 +68,7 @@ function GameCard(props) {
                             <div>
                                 <br />
                                 <hr />
-                                {/* <GetGames games={[gameItem]}></GetGames> */}
+                                <OddsTable game={game} odds={odds}></OddsTable>
                             </div>
                         }
                     </Row>

@@ -46,4 +46,11 @@ router.get("/api/games", async(req, res) => {
     run()
 })
 
+router.delete("/api/games", async(req, res) => {
+    console.log("DELETE: /api/games")
+    gameSchema.remove({ league: req.body.league }, (err) => {
+        res.send("success")
+    })
+})
+
 module.exports = router;
