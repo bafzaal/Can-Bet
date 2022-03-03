@@ -16,6 +16,7 @@ const BODOG_NHL = require("../script-configs/Bodog/bodog_NHL")
 const BODOG_NCAAM = require("../script-configs/Bodog/bodog_NCAAM")
 const BET99_NBA = require("../script-configs/Bet99/bet99_NBA")
 const BET99_NHL = require("../script-configs/Bet99/bet99_NHL")
+const BET99_NCAAM = require("../script-configs/Bet99/bet99_NCAAM")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
@@ -31,7 +32,8 @@ const BODOG_configs = {
 
 const BET99_configs = {
     "nhl": BET99_NHL,
-    "nba": BET99_NBA
+    "nba": BET99_NBA,
+    "ncaam": BET99_NCAAM
 }
 
 const END_DATES = {
