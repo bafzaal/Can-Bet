@@ -11,20 +11,22 @@ const TeamMappings = require("../models/teamMapSchema")
 const PROLINE_NBA = require("../script-configs/Proline/proline_NBA")
 const PROLINE_NHL = require("../script-configs/Proline/proline_NHL")
 const PROLINE_NCAAM = require("../script-configs/Proline/proline_NCAAM")
-const BODOG_NBA = require("../script-configs/bodog_NBA")
-const BODOG_NHL = require("../script-configs/bodog_NHL")
-const BET99_NBA = require("../script-configs/bet99_NBA")
-const BET99_NHL = require("../script-configs/bet99_NHL")
+const BODOG_NBA = require("../script-configs/Bodog/bodog_NBA")
+const BODOG_NHL = require("../script-configs/Bodog/bodog_NHL")
+const BODOG_NCAAM = require("../script-configs/Bodog/bodog_NCAAM")
+const BET99_NBA = require("../script-configs/Bet99/bet99_NBA")
+const BET99_NHL = require("../script-configs/Bet99/bet99_NHL")
 
 const PROLINE_configs = {
     "nhl": PROLINE_NHL,
     "nba": PROLINE_NBA,
-    "mens-college-basketball": PROLINE_NCAAM
+    "ncaam": PROLINE_NCAAM
 }
 
 const BODOG_configs = {
     "nhl": BODOG_NHL,
-    "nba": BODOG_NBA
+    "nba": BODOG_NBA,
+    "ncaam": BODOG_NCAAM
 }
 
 const BET99_configs = {
@@ -35,13 +37,13 @@ const BET99_configs = {
 const END_DATES = {
     "nhl": new Date("2022-04-30"),
     "nba": new Date("2022-04-11"),
-    "mens-college-basketball": new Date("2022-03-7")
+    "ncaam": new Date("2022-03-7")
 }
 
 const SPORTS = {
     "nhl": "hockey",
     "nba": "basketball",
-    "mens-college-basketball": "basketball"
+    "ncaam": "basketball"
 }
 
 router.post("/api/run/script/team/mappings", async(req, res) => {
@@ -134,7 +136,7 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
                     d = new Date(game.startDateTime)
                     d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                     obj = {
-                        league: league == "mens-college-basketball" ? "ncaam" : league,
+                        league: league,
                         home_team: teamMap(game.a, mappings),
                         away_team: teamMap(game.b, mappings),
                         day_string: d_string,
@@ -150,7 +152,7 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
                         res.status(500).send("Internal Server Error")
                     } else {
                         res.send({
-                            league: league == "mens-college-basketball" ? "ncaam" : league,
+                            league: league,
                             games: e_items.length
                         })
                     }
@@ -174,6 +176,10 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
     axios(config)
         .then(function(response) {
             let items = response.data[0].events
+            items = items.filter((x) => {
+                let markets = x.displayGroups[0].markets.filter((o) => { return o.description == "Moneyline" })
+                return markets.length > 0 && markets[0].outcomes.length > 0
+            })
             let oddsObjects = items.map((event) => {
                 let home_team = event.competitors.filter((x) => { return x.home })[0]
                 let away_team = event.competitors.filter((x) => { return !x.home })[0]
@@ -181,7 +187,7 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                 d = new Date(event.startTime)
                 d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                 return [{
-                        league: league == "mens-college-basketball" ? "ncaam" : league,
+                        league: league,
                         home_team: home_team.name,
                         away_team: away_team.name,
                         day_string: d_string,
@@ -191,7 +197,7 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
                         timestamp: timestamp
                     },
                     {
-                        league: league == "mens-college-basketball" ? "ncaam" : league,
+                        league: league,
                         home_team: home_team.name,
                         away_team: away_team.name,
                         day_string: d_string,
@@ -255,7 +261,7 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                     d = new Date(item.EventDate)
                     d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
                     return [{
-                            league: league == "mens-college-basketball" ? "ncaam" : league,
+                            league: league,
                             home_team: teamMap(home_team, mappings),
                             away_team: teamMap(away_team, mappings),
                             day_string: d_string,
@@ -265,7 +271,7 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
                             timestamp: timestamp
                         },
                         {
-                            league: league == "mens-college-basketball" ? "ncaam" : league,
+                            league: league,
                             home_team: teamMap(home_team, mappings),
                             away_team: teamMap(away_team, mappings),
                             day_string: d_string,
@@ -310,9 +316,10 @@ function teamMap(name, mappings) {
 }
 
 async function submitSchedule(sport, league, date, timestamp, res) {
+    let search_league = league == "ncaam" ? "mens-college-basketball" : league
     var config = {
         method: 'get',
-        url: `https://site.web.api.espn.com/apis/v2/scoreboard/header?sport=${sport}&league=${league}&region=us&lang=en&contentorigin=espn&buyWindow=1m&showAirings=buy%2Clive%2Creplay&showZipLookup=true&tz=America%2FNew_York&dates=${date}`,
+        url: `https://site.web.api.espn.com/apis/v2/scoreboard/header?sport=${sport}&league=${search_league}&region=us&lang=en&contentorigin=espn&buyWindow=1m&showAirings=buy%2Clive%2Creplay&showZipLookup=true&tz=America%2FNew_York&dates=${date}`,
         headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0',
             'Accept': '*/*',
@@ -340,7 +347,7 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                         time: event.date,
                         time_summary: event.summary,
                         day_string: date,
-                        league: league == "mens-college-basketball" ? "ncaam" : league,
+                        league: league,
                         home_team: home.displayName,
                         home_team_abbr: home.abbreviation,
                         home_logo: home.logo,
