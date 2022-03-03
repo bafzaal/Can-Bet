@@ -1,0 +1,35 @@
+.leaderboard-table {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  width: 100%;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 3px -1px rgb(151 171 187 / 70%);
+  float: left;
+  transform-style: preserve-3d;
+  margin: 10px 5px;
+  text-align: center;
+
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    padding: 1%;
+    font-size: 18px;
+    color: #59687f;
+  }
+
+  thead tr{
+    background: #f7f8fa;
+  }
+}
+
+.leaderboards-img{
+  padding-bottom: 3rem;
+  width: 100px !important;
+  margin: 0 auto;
+}

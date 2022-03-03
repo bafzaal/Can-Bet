@@ -9,9 +9,11 @@ const cors = require('cors');
 const app = express();
 
 let bets = require("./api/bets");
-let statsDisplay = require("./api/stats-display");
 let run_script = require("./api/run-script");
 let games = require("./api/games");
+let betDetails = require("./api/bet-details");
+let users = require("./api/users");
+
 
 app.use(cors())
 app.use(fileupload());
@@ -98,10 +100,10 @@ app.get("/logout", async(req, res) => {
 
 // authentcation
 app.get("/authentication", async(req, res) => {
-    var id = await authenticate(req, res)
-    if (id != null) {
+    let data = await authenticate(req, res)
+    if (data != null) {
 
-        res.status(200).json({ result: id })
+        res.status(200).json({ id: data.id, email: data.email })
     } else {
         res.status(401).json({ result: null })
     }
@@ -181,6 +183,6 @@ app.listen(port, () => {
 });
 
 
-app.use("/", bets, statsDisplay, run_script, games);
+app.use("/", bets, betDetails, users, run_script, games);
 
 module.exports = app;

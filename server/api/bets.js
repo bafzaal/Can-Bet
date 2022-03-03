@@ -4,6 +4,8 @@ const { Readable } = require("stream");
 const authenticate = require("../authentication/authenticate");
 const Bets = require("../models/betsSchema");
 const stats = require("../db/stats");
+const Users = require("../models/userSchema");
+const math = require('mathjs');
 
 var router = express.Router();
 
@@ -128,7 +130,7 @@ router.post("/api/place-bets-form", async (req, res) => {
   let betResult = "Win";
 
   if (size > 1) {
-    betType = "Multiple";
+    betType = "Parlay";
   } else if (size == 1) {
     betType = bets.betContents[0].type;
   }
@@ -177,6 +179,59 @@ router.post("/api/place-bets-form", async (req, res) => {
   console.log(created);
   await stats.updateStats(bets.id);
   return res.status(200).json({ success: true });
+});
+
+router.get("/api/stake-threshold", async (req, res) => {
+ let id = req.query.id;
+  const bets = await Bets.find({userId: id});
+
+  let betStakes = [];
+  let betTotal = 0;
+  let stakeThreshold = 0
+  const betsnum = bets.length;
+
+  for (i = 0; i < betsnum; i++) {
+    betStakes.push(bets[i].stake);
+    betTotal += bets[i].stake;
+  }
+
+  let stakeAverage = betTotal/betsnum
+
+  const sd = math.std(betStakes)
+
+  // Calculate 3 standard deviations above the mean to find threshold
+  if(betsnum == 0) {
+    stakeThreshold = 0
+  } else {
+    stakeThreshold = stakeAverage + (3*sd)
+  } 
+
+  return res.status(200).json({ stakeThreshold });
+});
+
+router.get("/api/bet-frequency", async (req, res) => {
+  let id = req.query.id;
+
+  const currentDate = Date.now();
+  var currentTimestamp = new Date(currentDate).toISOString();
+
+  var today = new Date();
+  var last1h = new Date(today.getTime() - (1000*60*60));
+
+  const bets = await Bets.find(
+    {
+      userId: id,
+      timestamp: {
+        $gte: last1h,
+        $lte: currentTimestamp,
+      }
+    }
+    );
+
+    let betCountLast1h = bets.length
+
+
+  return res.status(200).json({ betCountLast1h });
 });
 
 module.exports = router;

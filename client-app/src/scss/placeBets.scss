@@ -1,0 +1,43 @@
+.bets-logo{
+  padding-bottom: 2rem;
+  width: 100px !important;
+  margin: 0 auto;
+}
+
+.submit-bets-form{
+  font-weight: 500;
+  width: 100%;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 3px -1px rgb(151 171 187 / 70%);
+  float: left;
+  transform-style: preserve-3d;
+  margin: 10px 5px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 0 !important;
+}
+
+.bet-details label, .form-title{
+  font-weight: 800;
+  font-size: 18px;
+
+}
+
+.bet-details{
+  background: #f7f8fa;
+  padding: 25px 0px;
+}
+
+.form-container{
+  width: 29%;
+  .form-details{
+
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    overflow: auto;
+    flex-direction: column;
+    display: flex;
+    border: 1px solid #ebeff2;
+  }
+}

@@ -13,27 +13,29 @@ const Navbar = (props) => {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink to="/" className="nav-link active" aria-current="page" href="#">Home</NavLink> {/*Placeholder*/}
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/" className="nav-link" href="#">Dashboard</NavLink> {/*Placeholder*/}
+                                <NavLink to="/" className="nav-link" aria-current="page" href="#">Home</NavLink> {/*Placeholder*/}
                             </li>
             
                             <li className="nav-item">
-                                <NavLink to="/" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
+                                <NavLink to="/leaderboards" className="nav-link" href="#">Leaderboards</NavLink> {/*Placeholder*/}
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/upcoming/games" className="nav-link" href="#">Games</NavLink> {/*Placeholder*/}
                             </li>
                             {props.isAuth ?     
                              <>
-                              <li className="nav-item dropdown">
-                      
-                                <NavLink to="/" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page" href="#">Bets</NavLink>
-                                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                  <li><a className="dropdown-item" href="/place-bets">Place Bets</a></li>
-                                </ul>
+
+                              <li className="nav-item">
+                                  <NavLink to="/place-bets" className="nav-link" href="#">Bets</NavLink> {/*Placeholder*/}
                               </li>
+
+                              <li className="nav-item">
+                                  <NavLink to="responsible-gambling" className="nav-link" href="#">Responsible Gambling</NavLink> {/*Placeholder*/}
+                              </li>
+                              <li className="nav-item">
+                                  <NavLink to="betting-tips" className="nav-link" href="#">Betting Tips</NavLink> {/*Placeholder*/}
+                              </li>
+                  
                               </>:
                               <>
                               </>

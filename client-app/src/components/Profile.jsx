@@ -2,13 +2,44 @@ import React, { useEffect, useState, useRef } from "react";
 import { Row, Form, Container, Col, Button, Select } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import BettingHistory from "./BettingHistory";
 
 const Profile = (props) => {
   const { id } = useParams();
   const chosenBetFilter = useRef();
+  const [username, setUsername] = useState("");
+
   const [selectedBetFilter, setSelectedBetFilter] = useState("overall");
 
   const [betStats, setBetStats] = useState({});
+  
+    
+  useEffect(() => {
+    getUsername();
+  });
+
+  const getUsername = async () => {
+    let url = "http://localhost:3001/api/username";
+
+    await axios
+      .get(url, {
+        params: {
+          id: id,
+        },
+      })
+      .then(function (response) {
+        if (response.data.success == true) {
+          let data = response.data.result;
+
+          setUsername(data);
+
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getBetStats();
   }, [selectedBetFilter]);
@@ -53,12 +84,22 @@ const Profile = (props) => {
         console.log(error);
       });
   };
+  const performanceNotice = (e) => {
+    if(betStats.ROI < 0) {
+      return <p className="text-center">NOTICE: we noticed your current ROI is negative with a value of {betStats.ROI}% , please checkout <a href="http://localhost:3000/betting-tips">Betting Tips</a> for some recommendations.</p>
+    }
+  };
 
   return (
     <>
       <Container>
         <Row>
-          <h1 className="text-center headingLine">Profile </h1>
+          <h1 className="text-center headingLine">Profile</h1>
+          <h5 className="text-center">{username}</h5>
+        </Row>
+        <Row>
+          <h5 className="text-center headingLine">Stats</h5>
+     
         </Row>
         <Row className="mrgn-btm-3p">
           <Form>
@@ -250,6 +291,10 @@ const Profile = (props) => {
             </div>
           </div>
         </Row>
+        <Row>
+          {performanceNotice()}
+        </Row>
+        <BettingHistory></BettingHistory>
       </Container>
     </>
   );

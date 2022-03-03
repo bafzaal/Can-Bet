@@ -1,6 +1,7 @@
 import { React, useEffect, useState, useCallback } from 'react';
 import { resetPassword, getUser, deleteUser} from "../services/userService"
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AccountSettings = (props) => {
   let navigate = useNavigate();
@@ -14,6 +15,9 @@ const AccountSettings = (props) => {
     username: "",
     email: "",
   });
+
+  const [betLimit, setBetLimit] = useState(0);
+
   const handleOnPasswordChange = (event) => {
     const { name, value } = event.target;
     setChangePassword({ ...changePassword, [name]: value });
@@ -58,6 +62,43 @@ const AccountSettings = (props) => {
       });  
     
   }, []);
+
+  const setNewBetLimit = (event) => {
+    //e.preventDefault();
+    const { name, value } = event.target;
+    setBetLimit(value)
+
+    // UPDATE user db by id
+    
+  };
+
+  const newBetLimit = async (e) => {
+    let betLimitUrl = "http://localhost:3001/api/update-user-bet-limit";
+    await axios
+      .put(betLimitUrl, {
+        "id": id,
+        "oldPassword": changePassword.password,
+        "username": user.username,
+        "email": user.email,
+        "stakeLimit": betLimit 
+      })
+      .then(function(response) {
+        console.log(response)
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+  }
+
+  const submitForm = (e) => {
+    if(changePassword.newPassword == "" || changePassword.newPassword == null) {
+      if(betLimit) {
+        newBetLimit(e)
+      }
+    } else {
+      newPasswordUser(e)
+    }
+  }
   return(
         <div>
           
@@ -65,7 +106,7 @@ const AccountSettings = (props) => {
           <div className = "w-100 text-center">
             <div className="p-5 d-inline-block">
               <h1 className="display-6 fw-bolder mb-5">Edit Account Settings</h1>
-              <form onSubmit={newPasswordUser}>
+              <form onSubmit={submitForm}>
               <div className="mb-3">
                   <label htmlFor="exampleInputUsername" className="form-label">
 
@@ -121,6 +162,19 @@ const AccountSettings = (props) => {
                     id="exampleInputNewPassword"
                     onChange={handleOnPasswordChange}
                     value={changePassword.newPassword}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="exampleInputBetLimit" className="form-label">
+                    Stake Limit
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="betLimit"
+                    id="exampleInputBetLimit"
+                    onChange={setNewBetLimit}
+                    value={user.betLimit}
                   />
                 </div>
                 <button
