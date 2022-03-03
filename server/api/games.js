@@ -53,4 +53,11 @@ router.delete("/api/games", async(req, res) => {
     })
 })
 
+router.delete("/api/odds", async(req, res) => {
+    console.log("DELETE: /api/odds")
+    oddsSchema.remove({ league: req.body.league, book: req.body.book }, (err) => {
+        res.send("success")
+    })
+})
+
 module.exports = router;
