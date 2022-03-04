@@ -95,7 +95,7 @@ function OddsTable(props) {
             date: date,
             selection: selectedPick.team,
             odds: selectedPick.price,
-            result: "In-Play",
+            result: "Pending",
             home: game.home_team,
             away: game.away_team
         }
@@ -104,7 +104,7 @@ function OddsTable(props) {
             size: 1,
             totalOdds: selectedPick.price,
             stake: parseFloat(stake.current.value),
-            result: "In-Play",
+            result: "Pending",
             payout: returnValue,
             sportsbook: selectedBook,
             type: "Moneyline",

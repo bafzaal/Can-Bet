@@ -138,8 +138,8 @@ router.post("/api/place-bets-form", async(req, res) => {
 
     for (let i = 0; i < size; i++) {
         let individaulBet = bets.betContents[i];
-        if (individaulBet.result == "In-Play") {
-            betResult = "In-Play"
+        if (individaulBet.result == "Pending") {
+            betResult = "Pending"
         }
         if (individaulBet.result == "Loss") {
             betResult = "Loss"
