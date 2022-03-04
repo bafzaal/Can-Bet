@@ -11,17 +11,21 @@ import OddsTable from './OddsTable'
 
 GameCard.propTypes = {
     game: PropTypes.shape({}),
-    odds: PropTypes.array
+    odds: PropTypes.array,
+    loggedIn: PropTypes.bool,
+    userId: PropTypes.string
 };
 GameCard.defaultProps = {
     game: {},
-    odds: []
+    odds: [],
+    loggedIn: false,
+    userId: ""
 };
 
 function GameCard(props) {
 
     const [oddsHidden, setOddsHidden] = useState(true);
-    const { game, odds } = props
+    const { game, odds, loggedIn, userId } = props
 
     function toggleOddsHidden(e) {
         setOddsHidden(!oddsHidden);
@@ -95,7 +99,7 @@ function GameCard(props) {
                             <div>
                                 <br />
                                 <hr />
-                                <OddsTable game={game} odds={odds}></OddsTable>
+                                <OddsTable game={game} odds={odds} loggedIn={loggedIn} userId={userId}></OddsTable>
                             </div>
                         }
                     </Row>

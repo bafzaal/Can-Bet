@@ -6,17 +6,21 @@ import { Row, Form, Container, Col, Button } from "react-bootstrap";
 
 ShowUpcoming.propTypes = {
     games: PropTypes.array,
-    odds: PropTypes.array
+    odds: PropTypes.array,
+    loggedIn: PropTypes.bool,
+    userId: PropTypes.string
 };
 ShowUpcoming.defaultProps = {
     games: [],
-    odds: []
+    odds: [],
+    loggedIn: false,
+    userId: ""
 };
 
 let currentDateTime = new Date().toLocaleString()
 
 function ShowUpcoming(props) {
-    const { games, odds } = props
+    const { games, odds, loggedIn, userId } = props
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -53,7 +57,7 @@ function ShowUpcoming(props) {
                             {nhl_games.length > 0 &&
                                 nhl_games.map((game, i) => {
                                     return <Col xs="6" key={game.espnId}>
-                                        <GameCard game={game} odds={game.odds}></GameCard>
+                                        <GameCard game={game} odds={game.odds} loggedIn={loggedIn} userId={userId}></GameCard>
                                     </Col>
                                 })
                             }
@@ -63,7 +67,7 @@ function ShowUpcoming(props) {
                             {nba_games.length > 0 &&
                                 nba_games.map((game, i) => {
                                     return <Col xs="6" key={game.espnId}>
-                                        <GameCard game={game} odds={game.odds}></GameCard>
+                                        <GameCard game={game} odds={game.odds} loggedIn={loggedIn} userId={userId}></GameCard>
                                     </Col>
                                 })
                             }
@@ -73,7 +77,7 @@ function ShowUpcoming(props) {
                             {ncaam_games.length > 0 &&
                                 ncaam_games.map((game, i) => {
                                     return <Col xs="6" key={game.espnId}>
-                                        <GameCard game={game} odds={game.odds}></GameCard>
+                                        <GameCard game={game} odds={game.odds} loggedIn={loggedIn} userId={userId}></GameCard>
                                     </Col>
                                 })
                             }
