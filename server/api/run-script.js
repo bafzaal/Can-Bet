@@ -252,10 +252,20 @@ router.get("/api/run/script/odds/bodog", async(req, res) => {
 
     async function run() {
         try {
-            getMappings(league, res, getOdds)
+            deleteOutdated(league, res, getMappings)
         } catch (e) {
             res.status(500).send("Internal Server Error")
         }
+    }
+
+    async function deleteOutdated(league, res, callback) {
+        OddsSchema.deleteMany({ league: league, book: "Proline+" }, (err) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, res, getOdds)
+            }
+        })
     }
 
     async function getMappings(league, res, callback) {
@@ -335,10 +345,20 @@ router.get("/api/run/script/odds/bet99", async(req, res) => {
 
     async function run() {
         try {
-            getMappings(league, res, getOdds)
+            deleteOutdated(league, res, getMappings)
         } catch (e) {
             res.status(500).send("Internal Server Error")
         }
+    }
+
+    async function deleteOutdated(league, res, callback) {
+        OddsSchema.deleteMany({ league: league, book: "Proline+" }, (err) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, res, getOdds)
+            }
+        })
     }
 
     async function getMappings(league, res, callback) {
