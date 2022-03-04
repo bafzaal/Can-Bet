@@ -68,7 +68,7 @@ function App() {
       <Navbar isAuth={isTokenValidated} id={userId} />
       <Routes>
         <Route exact path="/" element={<Home />}></Route>
-        <Route exact path="/upcoming/games" element={<UpcomingGames />}></Route>
+        <Route exact path="/upcoming/games" element={<UpcomingGames userId={userId} loggedIn={isTokenValidated} />}></Route>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
