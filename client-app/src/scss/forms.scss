@@ -26,7 +26,7 @@
 }
 
 .OddsTable {
-    width: 20px !important;
+    // width: 20px !important;
     margin-left: auto !important;
     margin-right: auto !important;
 }
@@ -59,8 +59,29 @@
     margin-right: 5px;
 }
 
+.hover-card {
+    font-size: 20px;
+}
+
 .hover-card:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+}
+
+.hidden {
+    display: none;
+}
+
+.dark-link {
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
+a.dark-link:link {
+    text-decoration: none;
+}
+
+.best-odds {
+    color: #00cc66;
 }
 
 .hidden {

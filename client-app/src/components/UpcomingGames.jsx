@@ -8,62 +8,42 @@ const UpcomingGames = () => {
     const chosenDate = useRef()
     const chosenLeague = useRef()
 
-    let today = new Date().toISOString().split("T")[0]
+    let today = new Date()
+    let default_date = new Date().toISOString().split("T")[0]
 
-    const [posts, setLines] = useState({ lines: [] });
-    // const [games, setGames] = useState({
-    //     teams: [],
-    //     time: '',
-    //     bookmakers: {
-    //         name: '',
-    //         odds: []
-    //     }
-    // });
-    const [games, setGames] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedLeague, setSelectedLeague] = useState("All")
-
-    const apiKey = "dd1b6318c41925cc94e2ff981593aa0e"
-    const url = `https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds?apiKey=${apiKey}&regions=us`
-
-    const api_key = 'dd1b6318c41925cc94e2ff981593aa0e'
-
-    const region = 'us' // uk | us | eu | au
-
-    const market = 'h2h' // h2h | spreads | totals
-
-    const league_keys = ["americanfootball_nfl", "icehockey_nhl", "basketball_nba"]
+    const [games, setGames] = useState([])
+    const [odds, setOdds] = useState([])
 
     useEffect(() => {
-        getAllLines();
-    }, [setLines])
+        CallApi("all", today);
+    }, [setGames, setOdds])
     
     function showGames(e) {
         e.preventDefault();
         e.stopPropagation();
         let filterDate = new Date(chosenDate.current.value + " 00:00:00")
-        setSelectedDate(filterDate)
-        setSelectedLeague(chosenLeague.current.value)
+        CallApi(chosenLeague.current.value, filterDate)
     }
 
-    const getAllLines = () => {
-        let promises = []
-        league_keys.map((sportkey)=>{
-            promises.push(axios.get('https://api.the-odds-api.com/v3/odds', {
-                params: {
-                    api_key: api_key,
-                    sport: sportkey,
-                    region: region,
-                    mkt: market,
-                }
-            }))
-        })
+    function formatNumber(number) {
+        return ("0" + number).toString().slice(-2)
+    }
 
-        Promise.all(promises).then(arrOfResults => {
-            let results = arrOfResults.map((response) => {
-                return response.data.data
-            })
-            setGames(results.flat())
+    const CallApi = (league, date) => {
+        console.log(date)
+        let d = date
+        let d_string = d.getFullYear().toString() + formatNumber(d.getMonth() + 1) + formatNumber(d.getDate())
+        axios.get("http://localhost:3001/api/games", {
+            params: {
+                league: league,
+                date: d_string
+            }
+        })
+        .then((response) => {
+            let data = response.data
+            setGames(data.games)
+            setOdds(data.odds)
+            console.log(data)
         })
     }
 
@@ -78,15 +58,14 @@ const UpcomingGames = () => {
                         <Form>
                             <Row>
                                 <Col xs={{ span: 5, offset: 1 }}>
-                                    <Form.Control ref={chosenDate} type="date" defaultValue={today} />
+                                    <Form.Control ref={chosenDate} type="date" defaultValue={default_date} />
                                 </Col>
                                 <Col xs="4">
                                     <Form.Select ref={chosenLeague}>
-                                        <option value="All">All Leagues</option>
-                                        <option value="NFL">NFL</option>
-                                        <option value="NHL">NHL</option>
-                                        <option value="NBA">NBA</option>
-                                        {/* <option value="MLB">MLB</option> */}
+                                        <option value="all">All Leagues</option>
+                                        <option value="nhl">NHL</option>
+                                        <option value="nba">NBA</option>
+                                        <option value="ncaam">NCAAM</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs="2">
@@ -96,7 +75,7 @@ const UpcomingGames = () => {
                         </Form>
                     </Col>
                 </Row>
-                <ShowUpcoming games={games} selectedDate={selectedDate} selectedLeague={selectedLeague}></ShowUpcoming>
+                <ShowUpcoming games={games} odds={odds}></ShowUpcoming>
             </Container>
         </>
     );
