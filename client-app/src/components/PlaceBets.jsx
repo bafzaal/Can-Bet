@@ -10,12 +10,14 @@ const PlaceBets = (props) => {
   const [stakeThreshold, setSteakThreshold] = useState(0);
   const [betFrequency, setBetFrequency] = useState(0);
   const [betLimit, setBetLimit] = useState(0);
+  const [betHabits, setBetHabits] = useState({})
   const { id } = props
    useEffect(() => {
      if (id != "") {
       getBetThreshold();
       getBetFrequency();
       getUserBetLimit();
+      getBetHabits();
      }
   }, [id]);
 
@@ -71,6 +73,24 @@ const PlaceBets = (props) => {
       console.log(error);
     });
   }
+
+  const getBetHabits = async () => {
+    let betHabitsURL = "http://localhost:3001/api/bet-habits";
+    await axios
+    .get(betHabitsURL, {
+      params: {
+        id: props.id
+      },
+    })
+    .then(function(response) {
+      setBetHabits(response.data)
+      console.log(response.data);
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  }
+
   const onChange = (e) => {
     let url = "http://localhost:3001/api/place-bets-file";
     let file = e.target.files[0];
@@ -284,6 +304,14 @@ const PlaceBets = (props) => {
       submitForm(postData)
     }
   };
+  const recommend = () => {
+    let favoredTeam = betHabits.favouredTeam;
+    if(betHabits.winCount > betHabits.lossCount) {
+      return <p className="text-center"> We noticed you're a big fan of the {favoredTeam} with {betHabits.winCount} wins so far. If you like to place another bet please navigate to Add Bet found at the bottom of this page. </p>
+    } else {
+      return <p className="text-center">We noticed you're a big fan of the {favoredTeam}, unfortunately with {betHabits.lossCount} losses, you may want to visit our Betting Tips page to find tips and tricks to increase win rate.</p>
+    }
+  };
   return (
     <>
       <Container>
@@ -293,6 +321,12 @@ const PlaceBets = (props) => {
             className="bets-logo"
             src="https://img.icons8.com/external-others-maxicons/100/000000/external-bet-gambling-others-maxicons-3.png"
           />
+        </Row>
+        <Row>
+          <h3 className="text-center headingLine">Recommendations</h3>
+          {
+            recommend()
+          }
         </Row>
         <Row className="mrgn-btm-3p justify-content-center">
           <h5 className="text-center headingLine">Upload .csv</h5>

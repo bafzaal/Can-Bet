@@ -42,7 +42,7 @@ router.put("/api/update-user-bet-limit", async (req, res) => {
 
 router.get("/api/bet-limit", async (req, res) => {
     let id = req.query.id;
-    console.log(id)
+    //console.log(id)
     
     const user = await Users.find({_id: id});
 

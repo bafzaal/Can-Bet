@@ -86,7 +86,7 @@ const Profile = (props) => {
   };
   const performanceNotice = (e) => {
     if(betStats.ROI < 0) {
-      return <p className="text-center">NOTICE: we noticed your current ROI is negative with a value of {betStats.ROI}% , please checkout <a href="http://localhost:3000/betting-tips">Betting Tips</a> for some recommendations.</p>
+      return <p className="text-center">NOTICE: we noticed your current ROI is negative with a value of {betStats.ROI}% , feel free to checkout <a href="http://localhost:3000/betting-tips">Betting Tips</a> for some tips and tricks to increase ROI.</p>
     }
   };
 
