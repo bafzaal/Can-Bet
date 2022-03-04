@@ -30,8 +30,21 @@ function GameCard(props) {
     const options = { weekday: 'long', month: 'long', day: 'numeric' }
     const options_time = { hour: "numeric", minute: "2-digit" }
     let gameDate = new Date(game.time)
+    // Values for if game is pre-game
     let gameTime = gameDate.toLocaleDateString(undefined, options) + " (" + gameDate.toLocaleTimeString(undefined, options_time) + ")"
-    let clock = game.clock == "0.0" || "0.00" ? "" : game.clock
+    let hideOddsDiv = false
+    let clock = ""
+    if (game.game_over) {
+        // if game is over
+        hideOddsDiv = true
+        gameTime = "Final"
+    } else if (game.status == "in") {
+        // if game is in-progress
+        hideOddsDiv = true
+        gameTime = "In-Progress"
+        clock = game.time_summary
+    }
+
     let home_won = false;
     if (game.home_score && game.home_score > game.away_score) home_won = true
     return (
@@ -47,16 +60,16 @@ function GameCard(props) {
                                 </tr>
                                 <tr>
                                     <td><img height="24px" className="mrgn-rt-5px" src={game.home_logo}></img><i className={game.home_rank ? null : "hidden"}>#{game.home_rank} </i>{game.home_team} <strong>(H)</strong></td>
-                                    <td className={home_won && clock =="Final" ? "dark-link": ""}>{game.home_score}</td>
+                                    <td className={home_won && game.game_over ? "dark-link" : ""}>{game.home_score}</td>
                                 </tr>
                                 <tr>
                                     <td><img height="24px" className="mrgn-rt-5px" src={game.away_logo}></img><i className={game.away_rank ? null : "hidden"}>#{game.away_rank} </i>{game.away_team} <strong>(A)</strong></td>
-                                    <td className={!home_won && clock =="Final" ? "dark-link": ""}>{game.away_score}</td>
+                                    <td className={!home_won && game.game_over ? "dark-link" : ""}>{game.away_score}</td>
                                 </tr>
                             </tbody>
                         </ReactBootStrap.Table>
                     </Row>
-                    {!game.game_over &&
+                    {!hideOddsDiv &&
                         <Row>
                             <Col xs="8">
                                 {odds.filter((x) => { return x.book == "Proline+" }).length > 0 &&

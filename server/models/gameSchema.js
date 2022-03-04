@@ -70,7 +70,7 @@ const gameSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    clock: {
+    status: {
         type: String,
         require: false
     },

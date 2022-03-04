@@ -132,6 +132,7 @@ router.get("/api/run/script/scores", async(req, res) => {
             game.away_score = away.score
             game.game_over = event.fullStatus.type.completed
             game.clock = clock
+            game.time_summary = event.summary
             GameSchema.updateMany({ _id: game._id }, game, (err, docs) => {
                 if (err) {
                     res.status(500).send("Internal server error")
@@ -169,10 +170,20 @@ router.get("/api/run/script/odds/proline", async(req, res) => {
 
     async function run() {
         try {
-            getMappings(league, res, getProlineOdds)
+            deleteOutdated(league, res, getMappings)
         } catch (e) {
             res.status(500).send("Internal Server Error")
         }
+    }
+
+    async function deleteOutdated(league, res, callback) {
+        OddsSchema.deleteMany({ league: league, book: "Proline+" }, (err) => {
+            if (err) {
+                res.status(500).send("Internal Server Error")
+            } else {
+                callback(league, res, getProlineOdds)
+            }
+        })
     }
 
     async function getMappings(league, res, callback) {
@@ -432,7 +443,6 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                 let gameObjects = events.map((event) => {
                     let home = event.competitors.filter((x) => { return x.homeAway == "home" })[0]
                     let away = event.competitors.filter((x) => { return x.homeAway == "away" })[0]
-                    let clock = event.fullStatus.type.completed ? "Final" : event.fullStatus.displayClock
                     return {
                         espnId: event.id,
                         time: event.date,
@@ -451,7 +461,7 @@ async function submitSchedule(sport, league, date, timestamp, res) {
                         away_score: away.score,
                         espn_link: event.link,
                         game_over: event.fullStatus.type.completed,
-                        clock: clock,
+                        status: event.status,
                         timestamp: timestamp
                     }
                 })
