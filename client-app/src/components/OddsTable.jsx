@@ -115,6 +115,8 @@ function OddsTable(props) {
             .post(url, betObj, {})
             .then((response) => {
                 setOpenModal(false)
+                setReturnValue(0)
+                setWinValue(0)
                 setTimeout(() => {
                     setSuccessBanner(true)
                 }, 1000)
@@ -124,6 +126,8 @@ function OddsTable(props) {
             })
             .catch((error) => {
                 console.log(error);
+                setReturnValue(0)
+                setWinValue(0)
                 setFailBanner(true)
                 setTimeout(() => {
                     setFailBanner(false)
@@ -157,16 +161,10 @@ function OddsTable(props) {
                 <>
                     <br />
                     {successBanner &&
-                        <div className="text-center">
-                            <span className="best-odds">Successfully placed bet!</span>
-                            <br />
-                        </div>
+                        <div class="alert alert-success" role="alert">Successfully placed bet!</div>
                     }
                     {failBanner &&
-                        <div className="text-center">
-                            <span>There was an error</span>
-                            <br />
-                        </div>
+                        <div class="alert alert-warning" role="alert">An error occured while submitting your bet</div>
                     }
                     {!openModal &&
                         <ReactBootStrap.Table striped bordered hover responsive className="OddsTable">
@@ -189,7 +187,7 @@ function OddsTable(props) {
                                     <td className="text-center">{game.home_team_abbr}</td>
                                     {tableObject.proline_home &&
                                         <td className="text-center">
-                                            <span className={tableObject.proline_home.best_odds ? "best-odds" : null}>{tableObject.proline_home.price} / {tableObject.proline_home.american}</span>
+                                            <span className={tableObject.proline_home.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.proline_home.price} / {tableObject.proline_home.american}</span>
                                             {loggedIn &&
                                                 <span title="Bet" className="fa fa-bookmark" onClick={() => selectBet("Proline+", game, tableObject.proline_home)}></span>
                                             }
@@ -197,7 +195,7 @@ function OddsTable(props) {
                                     }
                                     {tableObject.bodog_home &&
                                         <td className="text-center">
-                                            <span className={tableObject.bodog_home.best_odds ? "best-odds" : null}>{tableObject.bodog_home.price} / {tableObject.bodog_home.american}</span>
+                                            <span className={tableObject.bodog_home.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.bodog_home.price} / {tableObject.bodog_home.american}</span>
                                             {loggedIn &&
                                                 <span className="fa fa-bookmark" onClick={() => selectBet("bodog", game, tableObject.bodog_home)}></span>
                                             }
@@ -205,7 +203,7 @@ function OddsTable(props) {
                                     }
                                     {tableObject.bet99_home &&
                                         <td className="text-center">
-                                            <span className={tableObject.bet99_home.best_odds ? "best-odds" : null}>{tableObject.bet99_home.price} / {tableObject.bet99_home.american}</span>
+                                            <span className={tableObject.bet99_home.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.bet99_home.price} / {tableObject.bet99_home.american}</span>
                                             {loggedIn &&
                                                 <span className="fa fa-bookmark" onClick={() => selectBet("Bet99", game, tableObject.bet99_home)}></span>
                                             }
@@ -216,7 +214,7 @@ function OddsTable(props) {
                                     <td className="text-center">{game.away_team_abbr}</td>
                                     {tableObject.proline_away &&
                                         <td className="text-center">
-                                            <span className={tableObject.proline_away.best_odds ? "best-odds" : null}>{tableObject.proline_away.price} / {tableObject.proline_away.american}</span>
+                                            <span className={tableObject.proline_away.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.proline_away.price} / {tableObject.proline_away.american}</span>
                                             {loggedIn &&
 
                                                 <span className="fa fa-bookmark" onClick={() => selectBet("Proline+", game, tableObject.proline_away)}></span>
@@ -225,7 +223,7 @@ function OddsTable(props) {
                                     }
                                     {tableObject.bodog_away &&
                                         <td className="text-center">
-                                            <span className={tableObject.bodog_away.best_odds ? "best-odds" : null}>{tableObject.bodog_away.price} / {tableObject.bodog_away.american}</span>
+                                            <span className={tableObject.bodog_away.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.bodog_away.price} / {tableObject.bodog_away.american}</span>
                                             {loggedIn &&
                                                 <span className="fa fa-bookmark" onClick={() => selectBet("bodog", game, tableObject.bodog_away)}></span>
                                             }
@@ -233,7 +231,7 @@ function OddsTable(props) {
                                     }
                                     {tableObject.bet99_away &&
                                         <td className="text-center">
-                                            <span className={tableObject.bet99_away.best_odds ? "best-odds" : null}>{tableObject.bet99_away.price} / {tableObject.bet99_away.american}</span>
+                                            <span className={tableObject.bet99_away.best_odds ? "best-odds mrgn-rt-5px" : "mrgn-rt-5px"}>{tableObject.bet99_away.price} / {tableObject.bet99_away.american}</span>
                                             {loggedIn &&
                                                 <span className="fa fa-bookmark" onClick={() => selectBet("Bet99", game, tableObject.bet99_away)}></span>
                                             }
@@ -247,18 +245,19 @@ function OddsTable(props) {
                     {openModal &&
 
                         <div className="modalContainer">
-                            <div className="title">
+                            <div>
+                                <button onClick={() => setOpenModal(false)} className="btn-close pull-right"></button>
                                 <img height="20" src={selectedBookImage}></img>  <span className="dark-link">{selectedBetTitle}</span>
                             </div>
-                            <div className="body">
+                            <div className="mb-3">
                                 {selectedPick.team_abbr} {selectedPick.american}<br />
-                                <input type="number" ref={stake} onChange={() => { stakeChange() }}></input><span> Return: {returnValue}</span><span> Winnings: {winValue}</span>
+                                <input type="number" className="width-7em" ref={stake} onChange={() => { stakeChange() }}></input><span className='dark-link'> Return</span> ${returnValue}<span className="dark-link"> Win</span> ${winValue}
                             </div>
-                            <div className="footer">
-                                <button onClick={() => setOpenModal(false)}>Cancel</button>
-                                <button id="cancelBtn" onClick={() => submitBet(game)}>Submit</button>
+                            <div className="mb-3">
+                                <button className="btn btn-primary" onClick={() => submitBet(game)}>Submit</button>
                             </div>
                         </div>
+
                     }
                 </>
             }
