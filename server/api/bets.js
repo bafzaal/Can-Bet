@@ -236,4 +236,65 @@ router.get("/api/bet-frequency", async(req, res) => {
     return res.status(200).json({ betCountLast1h });
 });
 
+router.get("/api/bet-habits", async (req, res) => {
+  let id = req.query.id;
+  const bets = await Bets.find(
+    {
+      userId: id
+    }
+  )
+  
+  let betHabits = [];
+  let teams = [];
+  //let results = [];
+
+  for(const bet of bets) {
+    let result = bet.result
+    let team = bet.betContents[0].selection
+    let betResult = {team: team, result: result};
+    betHabits.push(betResult)
+    teams.push(team)
+  }
+  const mostFreqTeam = mode(teams);
+
+  let habits = []
+  let freqTeamLossCount = 0;
+  let freqTeamWinCount = 0;
+
+  for(const bet of betHabits) {
+    if(bet.team == mostFreqTeam) {
+      habits.push(bet)
+      if(bet.result == "Win") {
+        freqTeamWinCount++;
+      } else if (bet.result == "Loss") {
+        freqTeamLossCount++;
+      }
+    }
+  }
+
+  return res.status(200).json({favouredTeam: mostFreqTeam, lossCount: freqTeamLossCount, winCount: freqTeamWinCount,habits: habits});
+});
+
+function mode(array)
+{
+    if(array.length == 0)
+        return null;
+    var modeMap = {};
+    var maxEl = array[0], maxCount = 1;
+    for(var i = 0; i < array.length; i++)
+    {
+        var el = array[i];
+        if(modeMap[el] == null)
+            modeMap[el] = 1;
+        else
+            modeMap[el]++;  
+        if(modeMap[el] > maxCount)
+        {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+    return maxEl;
+}
+
 module.exports = router;
