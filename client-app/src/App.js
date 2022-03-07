@@ -14,6 +14,7 @@ import Profile from "./components/Profile";
 import Leaderboards from "./components/Leaderboards";
 import ResponsibleGambling from "./components/ResponsibleGambling";
 import BettingTips from "./components/BettingTips";
+import Footer from './components/Footer';
 
 function App() {
   
@@ -88,6 +89,7 @@ function App() {
         } 
         {/* <Route exact path="/" element={}></Route> */}
       </Routes>
+      <Footer />
     </>
   );
 }
