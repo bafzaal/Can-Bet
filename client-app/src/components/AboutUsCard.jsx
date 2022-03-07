@@ -25,7 +25,7 @@ export default function AboutUsCard() {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          <b> About Can-Bet </b>s
+          <b> About Can-Bet </b>
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Betting just got way easier. 
