@@ -8,13 +8,13 @@ import Logout from "./components/Logout";
 import Register from "./components/Register";
 import AccountSettings from "./components/AccountSettings";
 import Home from "./components/Home";
-import BettingLines from "./components/BettingLines";
 import UpcomingGames from "./components/UpcomingGames";
 import PlaceBets from "./components/PlaceBets";
 import Profile from "./components/Profile";
 import Leaderboards from "./components/Leaderboards";
 import ResponsibleGambling from "./components/ResponsibleGambling";
 import BettingTips from "./components/BettingTips";
+import Footer from './components/Footer';
 
 function App() {
   
@@ -69,8 +69,7 @@ function App() {
       <Navbar isAuth={isTokenValidated} id={userId} />
       <Routes>
         <Route exact path="/" element={<Home />}></Route>
-        <Route exact path="/betting-lines" element={<BettingLines />}></Route>
-        <Route exact path="/upcoming/games" element={<UpcomingGames />}></Route>
+        <Route exact path="/upcoming/games" element={<UpcomingGames userId={userId} loggedIn={isTokenValidated} />}></Route>
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/logout" element={<Logout />}></Route>
@@ -90,6 +89,7 @@ function App() {
         } 
         {/* <Route exact path="/" element={}></Route> */}
       </Routes>
+      <Footer />
     </>
   );
 }
