@@ -32,7 +32,7 @@ const BettingHistory = () => {
         },
       })
       .then(function (response) {
-      
+
         if (response.data.success == true) {
           let data = response.data.result;
 
@@ -90,11 +90,15 @@ const BettingHistory = () => {
                       <div className="header">
                         <strong>{bet.type} </strong>
 
-                        {bet.result == "Loss" ? (
+                        {bet.result == "Loss" &&
                           <i className="text-danger bi bi-x-circle-fill"></i>
-                        ) : (
+                        }
+                        {bet.result == "Win" &&
                           <i className="text-success bi bi-check-circle-fill"></i>
-                        )}
+                        }
+                        {bet.result == "Pending" &&
+                          <i className="text-primary bi bi-dash-circle-fill"></i>
+                        }
                       </div>
 
                       <div className="stats">
@@ -156,12 +160,15 @@ const BettingHistory = () => {
                                   </div>
                                   <div>
                                     <strong>RESULT</strong> <span>{betDetails.result}   </span>
-
-                                  {betDetails.result == "Loss" ? (
-                                    <i className="text-danger bi bi-x-circle-fill"></i>
-                                  ) : (
-                                    <i className="text-success bi bi-check-circle-fill"></i>
-                                  )}
+                                    {betDetails.result == "Loss" &&
+                                      <i className="text-danger bi bi-x-circle-fill"></i>
+                                    }
+                                    {betDetails.result == "Win" &&
+                                      <i className="text-success bi bi-check-circle-fill"></i>
+                                    }
+                                    {betDetails.result == "Pending" &&
+                                      <i className="text-primary bi bi-dash-circle-fill"></i>
+                                    }
                                   </div>
                                 </div>
                               </div>

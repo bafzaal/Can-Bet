@@ -172,6 +172,7 @@ const SpreadForm = (props) => {
                 <option defaultValue></option>
                 <option value="Win">Win</option>
                 <option value="Loss">Loss</option>
+                <option value="Pending">Pending</option>
               </select>
             </div>
           </div>

@@ -4,9 +4,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Row, Form, Container, Col, Button } from "react-bootstrap";
 import ShowUpcoming from "./ShowUpcoming"
 
-const UpcomingGames = () => {
+const UpcomingGames = (props) => {
     const chosenDate = useRef()
     const chosenLeague = useRef()
+
+    const {userId, loggedIn} = props
 
     let today = new Date()
     let default_date = new Date().toISOString().split("T")[0]
@@ -75,7 +77,7 @@ const UpcomingGames = () => {
                         </Form>
                     </Col>
                 </Row>
-                <ShowUpcoming games={games} odds={odds}></ShowUpcoming>
+                <ShowUpcoming games={games} odds={odds} loggedIn={loggedIn} userId={userId}></ShowUpcoming>
             </Container>
         </>
     );
