@@ -201,7 +201,13 @@ router.get("/api/stake-threshold", async(req, res) => {
 
     let stakeAverage = betTotal / betsnum
 
-    const sd = math.std(betStakes)
+    let sd = 0
+    if(betStakes != 0) {
+        sd = math.std(betStakes)
+    } else {
+        stakeThreshold = 10
+    }
+    
 
     // Calculate 3 standard deviations above the mean to find threshold
     if (betsnum == 0) {

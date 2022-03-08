@@ -67,7 +67,7 @@ const PlaceBets = (props) => {
     })
     .then(function(response) {
       setBetLimit(response.data.betLimit);
-      console.log("teserers",response.data.betLimit);
+      console.log("bet limit - ",response.data.betLimit);
     })
     .catch(function(error) {
       console.log(error);
@@ -227,21 +227,37 @@ const PlaceBets = (props) => {
     };
     
     // CHECK FOR HIGH STAKE, FREQUENT BET
+    // A + B + C
     if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && betFrequency > 8 && formDetails.stake > betLimit) {
       confirmAlert({
         title: 'NOTICE',
         message: 'You have placed more tha 8 bets in the last hour, your stake is unusually high and you have exceeded your set stake limit. Please feel free to reach out to the Reponsible Gambling page on this site.',
         buttons: [
-          // {
-          //   label: 'Yes',
-          //   onClick: () => submitForm(postData)
-          // },
           {
-            label: 'OK',
-          }
+            label: 'Continue',
+            onClick: () => submitForm(postData)
+          },
+          // {
+          //   label: 'OK',
+          // }
         ]
       });
-    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && formDetails.stake > betLimit) {
+      
+    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && betFrequency > 8){ // A + B
+      confirmAlert({
+        title: 'NOTICE',
+        message: 'You have placed more than 8 bets in the last hour and your stake is unusually high. Please feel free to reach out to the Reponsible Gambling page on this site.',
+        buttons: [
+          {
+            label: 'Continue',
+            onClick: () => submitForm(postData)
+          }
+          // {
+          //   label: 'OK',
+          // }
+        ]
+      });
+    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold && formDetails.stake > betLimit) { // A + C
        confirmAlert({
         title: 'NOTICE',
         message: 'Your stake is unusually high and has exceeded the set limit, are you sure you want to submit?',
@@ -255,23 +271,35 @@ const PlaceBets = (props) => {
           }
         ]
       });
-    } else if (stakeThreshold && betFrequency > 5 && formDetails.stake > betLimit) {
+    } else if (stakeThreshold && betFrequency > 8 && formDetails.stake > betLimit) { // B + C
         confirmAlert({
         title: 'NOTICE',
-        message: 'You have placed more than 5 bets in the last hour and has exceeded the set limit, are you sure you want to submit?',
+        message: 'You have placed more than 8 bets in the last hour and has exceeded the set stake limit, please visit our Responsible Gambling page.',
         buttons: [
           {
-            label: 'Yes',
+            label: 'Continue',
             onClick: () => submitForm(postData)
           },
-          {
-            label: 'No',
-          }
+          // {
+          //   label: 'No',
+          // }
         ]
       });
-    } else if (stakeThreshold && betFrequency > 8 && formDetails.stake > betLimit) {
-      //alert user
-    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold) {
+    } else if (betFrequency > 8 ) { // B
+      confirmAlert({
+        title: 'NOTICE',
+        message: 'You have submitted more than 8 bets in the last hour please visit our Responsible Gambling page.',
+        buttons: [
+          {
+            label: 'Continue',
+            onClick: () => submitForm(postData)
+          }
+          // {
+          //   label: 'No',
+          // }
+        ]
+      });
+    } else if (stakeThreshold != 0 && formDetails.stake > stakeThreshold) { // A
        confirmAlert({
         title: 'NOTICE',
         message: 'Your stake is unusually high, are you sure you want to submit?',
@@ -286,6 +314,7 @@ const PlaceBets = (props) => {
         ]
       });
     } else if(formDetails.stake > betLimit) {
+      console.log("bet limit - ", betLimit);
        confirmAlert({
         title: 'NOTICE',
         message: 'You have exceed the set bet amount!',
@@ -296,6 +325,20 @@ const PlaceBets = (props) => {
           // },
           {
             label: 'Got it',
+          }
+        ]
+      });
+    } else if (stakeThreshold && betFrequency > 8) {
+       confirmAlert({
+        title: 'NOTICE',
+        message: 'You placed more than 8 bets in the last hour, please visit our page on repsonsible gambling for tips on safe betting.',
+        buttons: [
+          // {
+          //   label: 'Yes',
+          //   onClick: () => submitForm(postData)
+          // },
+          {
+            label: 'OK',
           }
         ]
       });
